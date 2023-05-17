@@ -10,11 +10,6 @@ model examplePCMtank "Example using PCM tank"
   parameter Modelica.Units.SI.PressureDifference dp_nominal=1000
     "Pressure difference";
 
-  PCMtank tank(
-    redeclare package Medium = Medium,
-    m_flow_nominal=m_flow_nominal,
-    dp_nominal=dp_nominal)
-    annotation (Placement(transformation(extent={{-10,-10},{10,10}})));
   Buildings.Fluid.Sources.MassFlowSource_T sou(
     redeclare package Medium = Medium,
     m_flow=m_flow_nominal,
@@ -32,11 +27,22 @@ model examplePCMtank "Example using PCM tank"
     amplitude=4.5,
     f=0.001,
     offset=273.15 + 28) annotation (Placement(transformation(extent={{-100,-10},{-80,10}})));
+  Components.PCMtank_hA pCMtank_hA(
+    redeclare package Medium = Medium,
+    m_flow_nominal=0.1,
+    dp_nominal=500,
+    nTub=10,
+    Rmax=0.1,
+    Ro=0.05,
+    Ri=0.04,
+    L=2,
+    PCM_t_ini=303.15,
+    m=10) annotation (Placement(transformation(extent={{-10,-10},{10,10}})));
 equation
-  connect(sou.ports[1], tank.port_a) annotation (Line(points={{-34,0},{-10,0}}, color={0,127,255}));
-  connect(tank.port_b, res.port_a) annotation (Line(points={{10,0},{26,0}}, color={0,127,255}));
   connect(res.port_b, bou.ports[1]) annotation (Line(points={{46,0},{60,0}}, color={0,127,255}));
   connect(sou.T_in, sine.y) annotation (Line(points={{-56,4},{-74,4},{-74,0},{-79,0}}, color={0,0,127}));
+  connect(sou.ports[1], pCMtank_hA.port_a) annotation (Line(points={{-34,0},{-10,0}}, color={0,127,255}));
+  connect(pCMtank_hA.port_b, res.port_a) annotation (Line(points={{10,0},{26,0}}, color={0,127,255}));
 annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
       coordinateSystem(preserveAspectRatio=false)),
     Documentation(revisions="<html>

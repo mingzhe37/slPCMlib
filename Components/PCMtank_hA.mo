@@ -93,8 +93,7 @@ model PCMtank_hA "A PCM storage tank model"
     annotation (Placement(transformation(extent={{48,-90},{68,-70}})));
   Modelica.Thermal.HeatTransfer.Sensors.TemperatureSensor temSen
     annotation (Placement(transformation(extent={{0,-70},{20,-50}})));
-  Modelica.Thermal.HeatTransfer.Components.Convection con(dT(min=-200))
-    "Convection (and conduction) on fluid side 1"
+  Modelica.Thermal.HeatTransfer.Components.Convection con(dT(min=-200)) "Convection (and conduction) on fluid side"
     annotation (Placement(transformation(extent={{-40,-40},{-20,-20}})));
   BaseClasses.HATube hATube(
     Rmax=Rmax,
