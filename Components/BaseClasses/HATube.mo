@@ -54,10 +54,13 @@ protected
   Modelica.Units.SI.CoefficientOfHeatTransfer hf "Coefficient of heat transfer";
 
 algorithm
-  Re := slPCMlib.Components.BaseClasses.ReynoldsNumber_m_flow(
+  Re := Buildings.Utilities.Math.Functions.smoothMax(
+        x1=10,
+        x2=slPCMlib.Components.BaseClasses.ReynoldsNumber_m_flow(
         m_flow,
         slPCMlib.Components.BaseClasses.dynamicViscosityWater(T_HTF),
-        Ri*2);
+        Ri*2),
+        deltaX=1E-5);
 
   Pr := slPCMlib.Components.BaseClasses.prandtlNumberWater(T_HTF);
 

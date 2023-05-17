@@ -3,7 +3,7 @@ linearT
 HeatCapacitorSlPCMlib
 SingleLayerSlPCMlib
 PCMlayer_1D_1port_1symmetry
-PCMtank
 PCMtank_hA
+PCMtank_heaFlo
 Examples
 BaseClasses

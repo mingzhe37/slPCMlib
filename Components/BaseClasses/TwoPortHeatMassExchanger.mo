@@ -60,7 +60,7 @@ model TwoPortHeatMassExchanger "Partial model transporting one fluid stream with
     final linearized=linearizeFlowResistance,
     final homotopyInitialization=homotopyInitialization,
     final dp_nominal=dp_nominal) "Flow resistance"
-    annotation (Placement(transformation(extent={{-50,-10},{-30,10}})));
+    annotation (Placement(transformation(extent={{-60,-10},{-40,10}})));
 
 protected
   parameter Medium.ThermodynamicState sta_default=Medium.setState_pTX(
@@ -73,13 +73,7 @@ protected
       Medium.specificEnthalpy(sta_start) "Start value for outflowing enthalpy";
 
   Buildings.Fluid.Sensors.MassFlowRate masFloSen(redeclare package Medium = Medium) "Mass flow rate sensor"
-    annotation (Placement(transformation(extent={{-88,-6},{-76,6}})));
-  Buildings.Fluid.Sensors.TemperatureTwoPort temSen(
-    redeclare package Medium = Medium,
-    allowFlowReversal=allowFlowReversal,
-    m_flow_nominal=m_flow_nominal)
-    "Temperature sensor, used to obtain temperature for convective heat transfer calculation"
-    annotation (Placement(transformation(extent={{-70,-6},{-58,6}})));
+    annotation (Placement(transformation(extent={{-86,-6},{-74,6}})));
 initial algorithm
   assert((energyDynamics == Modelica.Fluid.Types.Dynamics.SteadyState) or
           tau > Modelica.Constants.eps,
@@ -96,11 +90,10 @@ equation
       points={{1,0},{100,0}},
       color={0,127,255}));
   connect(preDro.port_b, vol.ports[1]) annotation (Line(
-      points={{-30,0},{1,0}},
+      points={{-40,0},{1,0}},
       color={0,127,255}));
-  connect(temSen.port_b, preDro.port_a) annotation (Line(points={{-58,0},{-50,0}}, color={0,127,255}));
-  connect(port_a, masFloSen.port_a) annotation (Line(points={{-100,0},{-88,0}}, color={0,127,255}));
-  connect(masFloSen.port_b, temSen.port_a) annotation (Line(points={{-76,0},{-70,0}}, color={0,127,255}));
+  connect(port_a, masFloSen.port_a) annotation (Line(points={{-100,0},{-86,0}}, color={0,127,255}));
+  connect(preDro.port_a, masFloSen.port_b) annotation (Line(points={{-60,0},{-74,0}}, color={0,127,255}));
   annotation (
     Documentation(info="<html>
 <p>

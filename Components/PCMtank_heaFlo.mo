@@ -1,5 +1,5 @@
 within slPCMlib.Components;
-model PCMtank_hA "A PCM storage tank model"
+model PCMtank_heaFlo "A PCM storage tank model"
   extends slPCMlib.Components.BaseClasses.TwoPortHeatMassExchanger(
     final allowFlowReversal=false,
     final tau=tauHex,
@@ -93,9 +93,6 @@ model PCMtank_hA "A PCM storage tank model"
     annotation (Placement(transformation(extent={{48,-90},{68,-70}})));
   Modelica.Thermal.HeatTransfer.Sensors.TemperatureSensor temSen
     annotation (Placement(transformation(extent={{0,-70},{20,-50}})));
-  Modelica.Thermal.HeatTransfer.Components.Convection con(dT(min=-200))
-    "Convection (and conduction) on fluid side 1"
-    annotation (Placement(transformation(extent={{-40,-40},{-20,-20}})));
   BaseClasses.HATube hATube(
     Rmax=Rmax,
     Ro=Ro,
@@ -110,12 +107,24 @@ model PCMtank_hA "A PCM storage tank model"
         X=inStream(port_a.Xi_outflow))))
     annotation (Placement(transformation(extent={{-100,72},{-80,92}})));
   Modelica.Blocks.Math.Gain gai(k=nTub) "Gain block to account for the number of tubes"
-    annotation (Placement(transformation(extent={{-20,40},{-8,52}})));
+    annotation (Placement(transformation(extent={{14,42},{26,54}})));
   Modelica.Blocks.Sources.RealExpression TIn(final y=Medium.temperature(state=Medium.setState_phX(
         p=port_a.p,
         h=inStream(port_a.h_outflow),
         X=inStream(port_a.Xi_outflow)))) "Inlet temperature into tank"
     annotation (Placement(transformation(extent={{-100,40},{-80,60}})));
+  Buildings.HeatTransfer.Sources.PrescribedHeatFlow preHeaHTF
+    annotation (Placement(transformation(extent={{-8,10},{-20,22}})));
+  Buildings.HeatTransfer.Sources.PrescribedHeatFlow preHeaPCM
+    annotation (Placement(transformation(extent={{-8,24},{-20,36}})));
+  Modelica.Blocks.Sources.RealExpression deltaT(final y=CMin_flow*(Medium.temperature(state=Medium.setState_phX(
+        p=port_a.p,
+        h=inStream(port_a.h_outflow),
+        X=inStream(port_a.Xi_outflow))) - PCMCap.port.T)) "Inlet temperature into tank"
+    annotation (Placement(transformation(extent={{-40,70},{-20,90}})));
+  Modelica.Blocks.Math.Product pro annotation (Placement(transformation(extent={{-10,42},{2,54}})));
+  Modelica.Blocks.Math.Gain neg(k=-1) "Gain block to account for the number of tubes"
+    annotation (Placement(transformation(extent={{26,10},{14,22}})));
 protected
   Modelica.Units.SI.ThermalConductance CMin_flow = m_flow*Medium.specificHeatCapacityCp(
         state=Medium.setState_phX(
@@ -128,18 +137,22 @@ equation
   connect(PCMh.y, h) annotation (Line(points={{71,60},{110,60}}, color={0,0,127}));
   connect(Qflo.y, Q_flow) annotation (Line(points={{71,40},{110,40}}, color={0,0,127}));
   connect(PCMCap.port, temSen.port) annotation (Line(points={{-70,-60},{0,-60}}, color={191,0,0}));
-  connect(vol.heatPort, con.fluid)
-    annotation (Line(points={{-9,-10},{-14,-10},{-14,-30},{-20,-30}}, color={191,0,0}));
-  connect(con.solid, PCMCap.port)
-    annotation (Line(points={{-40,-30},{-50,-30},{-50,-60},{-70,-60}}, color={191,0,0}));
   connect(masFloSen.m_flow, hATube.m_flow) annotation (Line(points={{-80,6.6},{-80,43},{-51,43}}, color={0,0,127}));
   connect(PCMfrac.y, hATube.theta) annotation (Line(points={{-79,66},{-68,66},{-68,53},{-51,53}}, color={0,0,127}));
   connect(cpHTF.y, hATube.cp) annotation (Line(points={{-79,82},{-60,82},{-60,57},{-51,57}}, color={0,0,127}));
-  connect(hATube.UA, gai.u) annotation (Line(points={{-29,46},{-21.2,46}}, color={0,0,127}));
-  connect(gai.y, con.Gc)
-    annotation (Line(points={{-7.4,46},{0,46},{0,20},{-30,20},{-30,-20}},                     color={0,0,127}));
   connect(TIn.y, hATube.T_HTF) annotation (Line(points={{-79,50},{-70,50},{-70,47},{-51,47}}, color={0,0,127}));
   connect(temSen.T, T) annotation (Line(points={{21,-60},{40,-60},{40,-40},{110,-40}}, color={0,0,127}));
+  connect(pro.y, gai.u) annotation (Line(points={{2.6,48},{12.8,48}}, color={0,0,127}));
+  connect(deltaT.y, pro.u1) annotation (Line(points={{-19,80},{-16,80},{-16,51.6},{-11.2,51.6}}, color={0,0,127}));
+  connect(hATube.eps, pro.u2)
+    annotation (Line(points={{-29,54},{-20,54},{-20,44},{-12,44},{-12,44.4},{-11.2,44.4}}, color={0,0,127}));
+  connect(gai.y, preHeaPCM.Q_flow) annotation (Line(points={{26.6,48},{40,48},{40,30},{-8,30}}, color={0,0,127}));
+  connect(preHeaPCM.port, PCMCap.port)
+    annotation (Line(points={{-20,30},{-30,30},{-30,-60},{-70,-60}}, color={191,0,0}));
+  connect(gai.y, neg.u) annotation (Line(points={{26.6,48},{40,48},{40,16},{27.2,16}}, color={0,0,127}));
+  connect(neg.y, preHeaHTF.Q_flow) annotation (Line(points={{13.4,16},{-8,16}}, color={0,0,127}));
+  connect(preHeaHTF.port, vol.heatPort)
+    annotation (Line(points={{-20,16},{-26,16},{-26,-10},{-9,-10}}, color={191,0,0}));
   annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(coordinateSystem(preserveAspectRatio=false)),
     Documentation(info="<html>
 <p>A PCM tank model, based on Modelica iLPCMlib Library. </p>
@@ -151,4 +164,4 @@ First implementation.
 </li>
 </ul>
 </html>"));
-end PCMtank_hA;
+end PCMtank_heaFlo;
