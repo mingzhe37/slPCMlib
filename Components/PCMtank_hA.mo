@@ -1,5 +1,5 @@
-within slPCMlib.Examples;
-model PCMtank "A PCM storage tank model"
+within slPCMlib.Components;
+model PCMtank_hA "A PCM storage tank model"
   extends Buildings.Fluid.Interfaces.TwoPortHeatMassExchanger(
     final allowFlowReversal = true,
     final tau=tauHex,
@@ -63,6 +63,11 @@ model PCMtank "A PCM storage tank model"
   Modelica.Thermal.HeatTransfer.Components.Convection con(dT(min=-200))
     "Convection (and conduction) on fluid side 1"
     annotation (Placement(transformation(extent={{-40,-40},{-20,-20}})));
+  Modelica.Blocks.Sources.RealExpression PCMh1(y=PCMCap.phTrModel.h)
+    annotation (Placement(transformation(extent={{-78,48},{-68,58}})));
+  Modelica.Blocks.Sources.RealExpression PCMh2(y=PCMCap.phTrModel.h)
+    annotation (Placement(transformation(extent={{-78,42},{-68,52}})));
+  BaseClasses.HATube hATube annotation (Placement(transformation(extent={{-60,40},{-40,60}})));
 equation
   connect(PCMPhi.y, Phi) annotation (Line(points={{69,-80},{110,-80}}, color={0,0,127}));
   connect(PCMXi.y, Xi) annotation (Line(points={{69,-60},{110,-60}}, color={0,0,127}));
@@ -76,6 +81,9 @@ equation
     annotation (Line(points={{-9,-10},{-14,-10},{-14,-30},{-20,-30}}, color={191,0,0}));
   connect(con.solid, PCMCap.port)
     annotation (Line(points={{-40,-30},{-50,-30},{-50,-60},{-70,-60}}, color={191,0,0}));
+  connect(PCMh1.y, hATube.T_HTF) annotation (Line(points={{-67.5,53},{-61,53}}, color={0,0,127}));
+  connect(PCMh2.y, hATube.theta) annotation (Line(points={{-67.5,47},{-61,47}}, color={0,0,127}));
+  connect(hATube.UA, con.Gc) annotation (Line(points={{-39,46},{-30,46},{-30,-20}}, color={0,0,127}));
   annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(coordinateSystem(preserveAspectRatio=false)),
     Documentation(info="<html>
 <p>A PCM tank model, based on Modelica iLPCMlib Library. </p>
@@ -87,4 +95,4 @@ First implementation.
 </li>
 </ul>
 </html>"));
-end PCMtank;
+end PCMtank_hA;
