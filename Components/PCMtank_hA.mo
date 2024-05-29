@@ -59,7 +59,7 @@ model PCMtank_hA "A PCM storage tank model"
     displayUnit = "degC",
     min=0)
     "Temperature of the fluid leaving at port_b"
-    annotation (Placement(transformation(extent={{100,-50},{120,-30}})));
+    annotation (Placement(transformation(extent={{100,-40},{120,-20}})));
 
   Modelica.Blocks.Interfaces.RealOutput Q_flow(final unit="W")
     "Heat flow rate, positive if flow from outside into tank" annotation (Placement(transformation(extent={{100,
@@ -72,7 +72,7 @@ model PCMtank_hA "A PCM storage tank model"
   Components.HeatCapacitorSlPCMlib PCMCap(
     m=m,
     T(start=PCM_t_ini),
-    redeclare package PCM = Media_generic.generic_7thOrderSmoothStep,
+    redeclare package PCM = slPCMlib.Media_Axiotherm_ATP.Axiotherm_ATP_12,
     redeclare Interfaces.phTransModMeltingCurve phTrModel)
     "Capacitor of PCM" annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
@@ -80,17 +80,17 @@ model PCMtank_hA "A PCM storage tank model"
         origin={-70,-50})));
 
   Modelica.Blocks.Interfaces.RealOutput Phi(final unit="1") "Liquid volume phase fraction" annotation (
-      Placement(transformation(extent={{100,-90},{120,-70}}), iconTransformation(extent={{100,-90},{120,-70}})));
+      Placement(transformation(extent={{100,-100},{120,-80}}),iconTransformation(extent={{100,-100},{120,-80}})));
   Modelica.Blocks.Interfaces.RealOutput h(final unit="J/kg") "Specific enthalpy" annotation (Placement(
-        transformation(extent={{100,50},{120,70}}), iconTransformation(extent={{100,50},{120,70}})));
+        transformation(extent={{100,70},{120,90}}), iconTransformation(extent={{100,70},{120,90}})));
   Modelica.Blocks.Sources.RealExpression PCMh(y=PCMCap.phTrModel.h)
-    annotation (Placement(transformation(extent={{50,50},{70,70}})));
+    annotation (Placement(transformation(extent={{50,70},{70,90}})));
   Modelica.Blocks.Sources.RealExpression Qflo(y=PCMCap.port.Q_flow)
     annotation (Placement(transformation(extent={{50,30},{70,50}})));
   Modelica.Blocks.Sources.RealExpression PCMXi(y=PCMCap.phTrModel.xi)
     annotation (Placement(transformation(extent={{48,-70},{68,-50}})));
   Modelica.Blocks.Sources.RealExpression PCMPhi(y=PCMCap.phTrModel.phi)
-    annotation (Placement(transformation(extent={{48,-90},{68,-70}})));
+    annotation (Placement(transformation(extent={{48,-100},{68,-80}})));
   Modelica.Thermal.HeatTransfer.Sensors.TemperatureSensor temSen
     annotation (Placement(transformation(extent={{0,-70},{20,-50}})));
   Modelica.Thermal.HeatTransfer.Components.Convection con(dT(min=-200)) "Convection (and conduction) on fluid side"
@@ -122,9 +122,9 @@ protected
         h=inStream(port_a.h_outflow),
         X=inStream(port_a.Xi_outflow)));
 equation
-  connect(PCMPhi.y, Phi) annotation (Line(points={{69,-80},{110,-80}}, color={0,0,127}));
+  connect(PCMPhi.y, Phi) annotation (Line(points={{69,-90},{110,-90}}, color={0,0,127}));
   connect(PCMXi.y, Xi) annotation (Line(points={{69,-60},{110,-60}}, color={0,0,127}));
-  connect(PCMh.y, h) annotation (Line(points={{71,60},{110,60}}, color={0,0,127}));
+  connect(PCMh.y, h) annotation (Line(points={{71,80},{110,80}}, color={0,0,127}));
   connect(Qflo.y, Q_flow) annotation (Line(points={{71,40},{110,40}}, color={0,0,127}));
   connect(PCMCap.port, temSen.port) annotation (Line(points={{-70,-60},{0,-60}}, color={191,0,0}));
   connect(vol.heatPort, con.fluid)
@@ -138,8 +138,173 @@ equation
   connect(gai.y, con.Gc)
     annotation (Line(points={{-7.4,46},{0,46},{0,20},{-30,20},{-30,-20}},                     color={0,0,127}));
   connect(TIn.y, hATube.T_HTF) annotation (Line(points={{-79,50},{-70,50},{-70,47},{-51,47}}, color={0,0,127}));
-  connect(temSen.T, T) annotation (Line(points={{21,-60},{40,-60},{40,-40},{110,-40}}, color={0,0,127}));
-  annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(coordinateSystem(preserveAspectRatio=false)),
+  connect(temSen.T, T) annotation (Line(points={{21,-60},{40,-60},{40,-30},{110,-30}}, color={0,0,127}));
+  annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
+        Rectangle(
+          extent={{-100,70},{100,-70}},
+          lineColor={0,0,0},
+          fillColor={95,95,95},
+          fillPattern=FillPattern.Solid,
+          pattern=LinePattern.None),
+        Ellipse(
+          extent={{-100,100},{100,40}},
+          lineColor={0,0,0},
+          fillColor={85,85,255},
+          fillPattern=FillPattern.Solid),
+        Ellipse(
+          extent={{66,80},{88,64}},
+          lineColor={0,0,0},
+          fillColor={223,188,190},
+          fillPattern=FillPattern.Forward),
+        Ellipse(
+          extent={{68,78},{86,66}},
+          lineColor={0,0,0},
+          fillColor={213,0,0},
+          fillPattern=FillPattern.Solid),
+        Text(
+          extent={{100,120},{160,80}},
+          textColor={0,0,88},
+          textString="Specific_h"),
+        Text(
+          extent={{100,68},{140,48}},
+          textColor={0,0,88},
+          textString="Q_flow"),
+        Text(
+          extent={{100,-6},{120,-26}},
+          textColor={0,0,88},
+          textString="T"),
+        Text(
+          extent={{100,-36},{140,-56}},
+          textColor={0,0,88},
+          textString="SOC_mas"),
+        Text(
+          extent={{100,-66},{132,-86}},
+          textColor={0,0,88},
+          textString="SOC_liq"),
+        Ellipse(
+          extent={{36,80},{58,64}},
+          lineColor={0,0,0},
+          fillColor={223,188,190},
+          fillPattern=FillPattern.Forward),
+        Ellipse(
+          extent={{38,78},{56,66}},
+          lineColor={0,0,0},
+          fillColor={213,0,0},
+          fillPattern=FillPattern.Solid),
+        Ellipse(
+          extent={{6,80},{28,64}},
+          lineColor={0,0,0},
+          fillColor={223,188,190},
+          fillPattern=FillPattern.Forward),
+        Ellipse(
+          extent={{8,78},{26,66}},
+          lineColor={0,0,0},
+          fillColor={213,0,0},
+          fillPattern=FillPattern.Solid),
+        Ellipse(
+          extent={{20,96},{42,80}},
+          lineColor={0,0,0},
+          fillColor={223,188,190},
+          fillPattern=FillPattern.Forward),
+        Ellipse(
+          extent={{22,94},{40,82}},
+          lineColor={0,0,0},
+          fillColor={213,0,0},
+          fillPattern=FillPattern.Solid),
+        Ellipse(
+          extent={{-10,96},{12,80}},
+          lineColor={0,0,0},
+          fillColor={223,188,190},
+          fillPattern=FillPattern.Forward),
+        Ellipse(
+          extent={{-8,94},{10,82}},
+          lineColor={0,0,0},
+          fillColor={213,0,0},
+          fillPattern=FillPattern.Solid),
+        Ellipse(
+          extent={{-40,96},{-18,80}},
+          lineColor={0,0,0},
+          fillColor={223,188,190},
+          fillPattern=FillPattern.Forward),
+        Ellipse(
+          extent={{-38,94},{-20,82}},
+          lineColor={0,0,0},
+          fillColor={213,0,0},
+          fillPattern=FillPattern.Solid),
+        Ellipse(
+          extent={{-24,80},{-2,64}},
+          lineColor={0,0,0},
+          fillColor={223,188,190},
+          fillPattern=FillPattern.Forward),
+        Ellipse(
+          extent={{-22,78},{-4,66}},
+          lineColor={0,0,0},
+          fillColor={213,0,0},
+          fillPattern=FillPattern.Solid),
+        Ellipse(
+          extent={{-54,80},{-32,64}},
+          lineColor={0,0,0},
+          fillColor={223,188,190},
+          fillPattern=FillPattern.Forward),
+        Ellipse(
+          extent={{-52,78},{-34,66}},
+          lineColor={0,0,0},
+          fillColor={213,0,0},
+          fillPattern=FillPattern.Solid),
+        Ellipse(
+          extent={{-84,80},{-62,64}},
+          lineColor={0,0,0},
+          fillColor={223,188,190},
+          fillPattern=FillPattern.Forward),
+        Ellipse(
+          extent={{-82,78},{-64,66}},
+          lineColor={0,0,0},
+          fillColor={213,0,0},
+          fillPattern=FillPattern.Solid),
+        Ellipse(
+          extent={{22,62},{44,46}},
+          lineColor={0,0,0},
+          fillColor={223,188,190},
+          fillPattern=FillPattern.Forward),
+        Ellipse(
+          extent={{24,60},{42,48}},
+          lineColor={0,0,0},
+          fillColor={213,0,0},
+          fillPattern=FillPattern.Solid),
+        Ellipse(
+          extent={{-8,62},{14,46}},
+          lineColor={0,0,0},
+          fillColor={223,188,190},
+          fillPattern=FillPattern.Forward),
+        Ellipse(
+          extent={{-6,60},{12,48}},
+          lineColor={0,0,0},
+          fillColor={213,0,0},
+          fillPattern=FillPattern.Solid),
+        Ellipse(
+          extent={{-38,62},{-16,46}},
+          lineColor={0,0,0},
+          fillColor={223,188,190},
+          fillPattern=FillPattern.Forward),
+        Ellipse(
+          extent={{-36,60},{-18,48}},
+          lineColor={0,0,0},
+          fillColor={213,0,0},
+          fillPattern=FillPattern.Solid),
+        Ellipse(
+          extent={{-100,-34},{98,-102}},
+          lineColor={0,0,0},
+          fillColor={95,95,95},
+          fillPattern=FillPattern.Solid,
+          closure=EllipseClosure.Radial,
+          startAngle=0,
+          endAngle=180,
+          pattern=LinePattern.None),
+        Text(
+          extent={{-68,-12},{72,-32}},
+          textColor={255,255,255},
+          textStyle={TextStyle.Bold},
+          textString="PCM Tank")}),                              Diagram(coordinateSystem(preserveAspectRatio=false)),
     Documentation(info="<html>
 <p>A PCM tank model, based on Modelica iLPCMlib Library. </p>
 </html>", revisions="<html>
