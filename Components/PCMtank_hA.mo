@@ -301,10 +301,10 @@ equation
           endAngle=180,
           pattern=LinePattern.None),
         Text(
-          extent={{-68,-12},{72,-32}},
+          extent={{-70,-6},{70,-46}},
           textColor={255,255,255},
           textStyle={TextStyle.Bold},
-          textString="PCM Tank")}),                              Diagram(coordinateSystem(preserveAspectRatio=false)),
+          textString="PCM")}),                                   Diagram(coordinateSystem(preserveAspectRatio=false)),
     Documentation(info="<html>
 <p>A PCM tank model, based on Modelica iLPCMlib Library. </p>
 </html>", revisions="<html>
