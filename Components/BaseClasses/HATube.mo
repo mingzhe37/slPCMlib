@@ -31,7 +31,8 @@ model HATube "Overall heat transfer model for tubes in PCM tank"
     annotation (Placement(transformation(extent={{-120,-40},{-100,-20}})));
   Modelica.Blocks.Interfaces.RealInput theta(final unit="1") "pcm phase change fraction"
     annotation (Placement(transformation(extent={{-120,20},{-100,40}})));
-  Modelica.Blocks.Interfaces.RealInput cp(final unit="J/K") "heat transfer fluid heat capacity"
+  Modelica.Blocks.Interfaces.RealInput cp(final quantity="SpecificHeatCapacity",
+      final unit="J/(kg.K)") "heat transfer fluid heat capacity"
     annotation (Placement(transformation(extent={{-120,60},{-100,80}})));
 
   //block outputs

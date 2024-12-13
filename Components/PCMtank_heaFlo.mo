@@ -72,7 +72,7 @@ model PCMtank_heaFlo "A PCM storage tank model"
   Components.HeatCapacitorSlPCMlib PCMCap(
     m=m,
     T(start=PCM_t_ini),
-    redeclare package PCM = Media_generic.generic_7thOrderSmoothStep,
+    redeclare package PCM = slPCMlib.Media_Axiotherm_ATP.Axiotherm_ATP_12,
     redeclare Interfaces.phTransModMeltingCurve phTrModel)
     "Capacitor of PCM" annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},

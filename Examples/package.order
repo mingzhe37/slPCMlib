@@ -4,4 +4,5 @@ exampleHeatCapacitorPCM_3
 heatConduction1D
 Case600FF_PCM_slPCMlib_SingleLayerPCM
 examplePCMtank
+hpTesMPC
 PCMtank

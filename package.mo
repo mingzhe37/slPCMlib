@@ -3,7 +3,7 @@ package slPCMlib "Solid/liquid PCM thermophysical property
   and phase transition models library"
 
   annotation (uses(Modelica(version="4.0.0"), ModelicaServices(version="4.0.0"),
-    Buildings(version="9.0.0")),
+    Buildings(version="10.0.0")),
       Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}}),
       graphics={              Rectangle(
               extent={{-100,80},{100,-80}},
@@ -35,6 +35,6 @@ package slPCMlib "Solid/liquid PCM thermophysical property
           lineThickness=1,
           fillColor={108,88,49},
           fillPattern=FillPattern.Solid)}),
-  version="1",
-  conversion(noneFromVersion=""));
+  version="2",
+  conversion(noneFromVersion="", noneFromVersion="1"));
 end slPCMlib;

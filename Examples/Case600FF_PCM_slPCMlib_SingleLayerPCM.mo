@@ -217,11 +217,9 @@ model Case600FF_PCM_slPCMlib_SingleLayerPCM
   Modelica.Blocks.Math.MultiSum multiSum(nu=1)
     "Multi sum for infiltration air flow rate"
     annotation (Placement(transformation(extent={{-78,-80},{-66,-68}})));
-  Buildings.Controls.OBC.CDL.Continuous.MovingAverage TRooHou(delta=3600)
-    "Hourly averaged room air temperature"
+  Buildings.Controls.OBC.CDL.Reals.MovingAverage TRooHou(delta=3600) "Hourly averaged room air temperature"
     annotation (Placement(transformation(extent={{-68,-28},{-60,-20}})));
-  Buildings.Controls.OBC.CDL.Continuous.MovingAverage TRooAnn(delta=86400*365)
-    "Annual averaged room air temperature"
+  Buildings.Controls.OBC.CDL.Reals.MovingAverage TRooAnn(delta=86400*365) "Annual averaged room air temperature"
     annotation (Placement(transformation(extent={{-68,-40},{-60,-32}})));
 
   parameter Buildings.ThermalZones.Detailed.BaseClasses.OpaqueSurface surBou[2](each A=

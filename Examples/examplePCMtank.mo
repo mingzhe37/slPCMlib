@@ -2,9 +2,9 @@ within slPCMlib.Examples;
 model examplePCMtank "Example using PCM tank"
   extends Modelica.Icons.Example;
 
-  replaceable package Medium = Buildings.Media.Water;
+  replaceable package Medium = Buildings.Media.Air;
 
-  parameter Modelica.Units.SI.MassFlowRate m_flow_nominal=1
+  parameter Modelica.Units.SI.MassFlowRate m_flow_nominal=0.53
     "Nominal mass flow rate";
 
   parameter Modelica.Units.SI.PressureDifference dp_nominal=1000
@@ -24,20 +24,21 @@ model examplePCMtank "Example using PCM tank"
     dp_nominal=500) "Flow resistance"
     annotation (Placement(transformation(extent={{26,-10},{46,10}})));
   Modelica.Blocks.Sources.Sine sine(
-    amplitude=4.5,
+    amplitude=0,
     f=0.001,
-    offset=273.15 + 28) annotation (Placement(transformation(extent={{-100,-10},{-80,10}})));
+    offset=273.15 + 8)  annotation (Placement(transformation(extent={{-100,-10},{-80,10}})));
   Components.PCMtank_hA pCMtank_hA(
     redeclare package Medium = Medium,
     m_flow_nominal=0.1,
     dp_nominal=500,
-    nTub=10,
-    Rmax=0.1,
-    Ro=0.05,
-    Ri=0.04,
-    L=2,
-    PCM_t_ini=303.15,
-    m=10) annotation (Placement(transformation(extent={{-10,-10},{10,10}})));
+    nTub=4,
+    Rmax=0.05,
+    Ro=0.045,
+    Ri=0.043,
+    L=4,
+    PCM_t_ini=287.15,
+    m=330)
+          annotation (Placement(transformation(extent={{-10,-10},{10,10}})));
 equation
   connect(res.port_b, bou.ports[1]) annotation (Line(points={{46,0},{60,0}}, color={0,127,255}));
   connect(sou.T_in, sine.y) annotation (Line(points={{-56,4},{-74,4},{-74,0},{-79,0}}, color={0,0,127}));
@@ -54,5 +55,10 @@ First implementation.
 </ul>
 </html>", info="<html>
 <p>Example to show the use of PCM tank model.</p>
-</html>"));
+</html>"),
+    experiment(
+      StopTime=86400,
+      Interval=900,
+      Tolerance=1e-05,
+      __Dymola_Algorithm="Cvode"));
 end examplePCMtank;
