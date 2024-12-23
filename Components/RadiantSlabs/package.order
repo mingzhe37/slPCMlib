@@ -2,6 +2,7 @@ UsersGuide
 ParallelCircuitsSlab
 SingleCircuitSlab
 SingleCircuitSlab_PCM
+ParallelCircuitsSlab_PCM
 Types
 Examples
 BaseClasses
