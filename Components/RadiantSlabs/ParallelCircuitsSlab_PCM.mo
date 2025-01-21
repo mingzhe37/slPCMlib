@@ -107,6 +107,7 @@ model ParallelCircuitsSlab_PCM
     final allowFlowReversal=allowFlowReversal,
     final m_flow_nominal=m_flow_nominal/nCir,
     final m_flow_small=m_flow_small/nCir,
+    PCM_thickness=PCM_thickness,
     final homotopyInitialization=homotopyInitialization,
     final from_dp=from_dp,
     final dp_nominal=dp_nominal,
@@ -119,6 +120,7 @@ model ParallelCircuitsSlab_PCM
     final stateAtSurface_b=stateAtSurface_b)
     "Single parallel circuit of the radiant slab"
     annotation (Placement(transformation(extent={{-10,-10},{10,10}})));
+  parameter Modelica.Units.SI.Length PCM_thickness=0.03 "Thickness of layer";
 protected
   parameter Medium.ThermodynamicState state_default = Medium.setState_pTX(
       T=Medium.T_default,
