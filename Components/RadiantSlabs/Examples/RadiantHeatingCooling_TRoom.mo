@@ -20,7 +20,7 @@ model RadiantHeatingCooling_TRoom
     "Nominal heat flow rate for heating";
   parameter Modelica.Units.SI.MassFlowRate mHea_flow_nominal=QHea_flow_nominal/
       4200/10 "Design water mass flow rate for heating";
-  parameter Modelica.Units.SI.HeatFlowRate QCoo_flow_nominal=-9500
+  parameter Modelica.Units.SI.HeatFlowRate QCoo_flow_nominal=-5000
     "Nominal heat flow rate for cooling";
   parameter Modelica.Units.SI.MassFlowRate mCoo_flow_nominal=-QCoo_flow_nominal
       /4200/5 "Design water mass flow rate for heating";
@@ -41,7 +41,7 @@ model RadiantHeatingCooling_TRoom
     disPip=0.2,
     nCir=4,
     A=flo.sou.AFlo,
-    m_flow_nominal=mCoo_flow_nominal,
+    m_flow_nominal=designPar.mCoo_flow_nominal_Sou,
     energyDynamics=Modelica.Fluid.Types.Dynamics.FixedInitial,
     show_T=true) "Slab for ceiling with embedded pipes"
     annotation (Placement(transformation(extent={{342,14},{362,34}})));
@@ -60,7 +60,7 @@ model RadiantHeatingCooling_TRoom
       final unit="K",
       displayUnit="degC") = 299.15, y(final unit="K", displayUnit="degC")) "Room temperture set point for cooling"
     annotation (Placement(transformation(extent={{120,40},{140,60}})));
-  Buildings.Controls.OBC.CDL.Conversions.BooleanToReal booToRea(realTrue=mCoo_flow_nominal/9500*6700)
+  Buildings.Controls.OBC.CDL.Conversions.BooleanToReal booToReaSou(realTrue=designPar.mCoo_flow_nominal_Sou)
     "Cooling water mass flow rate" annotation (Placement(transformation(extent={{260,22},{280,42}})));
   Buildings.ThermalZones.EnergyPlus_9_6_0.OpaqueConstruction attFlo(surfaceName="Attic_floor_perimeter_south")
     "Floor of the attic above the living room"
@@ -86,7 +86,7 @@ model RadiantHeatingCooling_TRoom
     disPip=0.2,
     nCir=4,
     A=flo.nor.AFlo,
-    m_flow_nominal=mCoo_flow_nominal,
+    m_flow_nominal=designPar.mCoo_flow_nominal_Nor,
     energyDynamics=Modelica.Fluid.Types.Dynamics.FixedInitial,
     show_T=true) "Slab for ceiling with embedded pipes"
     annotation (Placement(transformation(extent={{342,-106},{362,-86}})));
@@ -101,7 +101,7 @@ model RadiantHeatingCooling_TRoom
     use_T_in=true,
     nPorts=1) "Mass flow source for cooling water at prescribed temperature"
     annotation (Placement(transformation(extent={{302,-106},{322,-86}})));
-  Buildings.Controls.OBC.CDL.Conversions.BooleanToReal booToRea1(realTrue=mCoo_flow_nominal/9500*5700)
+  Buildings.Controls.OBC.CDL.Conversions.BooleanToReal booToReaNor(realTrue=designPar.mCoo_flow_nominal_Nor)
     "Cooling water mass flow rate" annotation (Placement(transformation(extent={{260,-98},{280,-78}})));
   Buildings.ThermalZones.EnergyPlus_9_6_0.OpaqueConstruction attFloNor(surfaceName="Attic_floor_perimeter_north")
     "Floor of the attic above the living room" annotation (Placement(transformation(
@@ -120,7 +120,7 @@ model RadiantHeatingCooling_TRoom
     disPip=0.2,
     nCir=4,
     A=flo.eas.AFlo,
-    m_flow_nominal=mCoo_flow_nominal,
+    m_flow_nominal=designPar.mCoo_flow_nominal_Eas,
     energyDynamics=Modelica.Fluid.Types.Dynamics.FixedInitial,
     show_T=true) "Slab for ceiling with embedded pipes"
     annotation (Placement(transformation(extent={{342,-46},{362,-26}})));
@@ -135,7 +135,7 @@ model RadiantHeatingCooling_TRoom
     use_T_in=true,
     nPorts=1) "Mass flow source for cooling water at prescribed temperature"
     annotation (Placement(transformation(extent={{302,-46},{322,-26}})));
-  Buildings.Controls.OBC.CDL.Conversions.BooleanToReal booToRea2(realTrue=mCoo_flow_nominal/9500*4700)
+  Buildings.Controls.OBC.CDL.Conversions.BooleanToReal booToReaEas(realTrue=designPar.mCoo_flow_nominal_Eas)
     "Cooling water mass flow rate" annotation (Placement(transformation(extent={{260,-38},{280,-18}})));
   Buildings.ThermalZones.EnergyPlus_9_6_0.OpaqueConstruction attFloEas(surfaceName="Attic_floor_perimeter_east")
     "Floor of the attic above the living room" annotation (Placement(transformation(
@@ -154,7 +154,7 @@ model RadiantHeatingCooling_TRoom
     disPip=0.2,
     nCir=4,
     A=flo.wes.AFlo,
-    m_flow_nominal=mCoo_flow_nominal,
+    m_flow_nominal=designPar.mCoo_flow_nominal_Wes,
     energyDynamics=Modelica.Fluid.Types.Dynamics.FixedInitial,
     show_T=true) "Slab for ceiling with embedded pipes"
     annotation (Placement(transformation(extent={{342,-166},{362,-146}})));
@@ -169,7 +169,7 @@ model RadiantHeatingCooling_TRoom
     use_T_in=true,
     nPorts=1) "Mass flow source for cooling water at prescribed temperature"
     annotation (Placement(transformation(extent={{302,-166},{322,-146}})));
-  Buildings.Controls.OBC.CDL.Conversions.BooleanToReal booToRea3(realTrue=mCoo_flow_nominal/9500*3700)
+  Buildings.Controls.OBC.CDL.Conversions.BooleanToReal booToReaWes(realTrue=designPar.mCoo_flow_nominal_Wes)
     "Cooling water mass flow rate" annotation (Placement(transformation(extent={{260,-158},{280,-138}})));
   Buildings.ThermalZones.EnergyPlus_9_6_0.OpaqueConstruction attFloWes(surfaceName="Attic_floor_perimeter_west")
     "Floor of the attic above the living room" annotation (Placement(transformation(
@@ -186,14 +186,14 @@ model RadiantHeatingCooling_TRoom
   Buildings.Fluid.HeatExchangers.RadiantSlabs.ParallelCircuitsSlab slaCeiCor(
     redeclare package Medium = MediumW,
     allowFlowReversal=false,
-    layers=layCeiSou,
+    layers=layCeiRev,
     iLayPip=3,
     pipe=Buildings.Fluid.Data.Pipes.PEX_DN_15(),
     sysTyp=Buildings.Fluid.HeatExchangers.RadiantSlabs.Types.SystemType.Ceiling_Wall_or_Capillary,
     disPip=0.2,
     nCir=4,
     A=flo.cor.AFlo,
-    m_flow_nominal=mCoo_flow_nominal/9500*3000,
+    m_flow_nominal=designPar.mCoo_flow_nominal_Cor,
     energyDynamics=Modelica.Fluid.Types.Dynamics.FixedInitial,
     show_T=true) "Slab for ceiling with embedded pipes"
     annotation (Placement(transformation(extent={{342,-226},{362,-206}})));
@@ -208,11 +208,11 @@ model RadiantHeatingCooling_TRoom
     use_T_in=true,
     nPorts=1) "Mass flow source for cooling water at prescribed temperature"
     annotation (Placement(transformation(extent={{302,-226},{322,-206}})));
-  Buildings.Controls.OBC.CDL.Conversions.BooleanToReal booToRea4(realTrue=mCoo_flow_nominal/9500*3000)
+  Buildings.Controls.OBC.CDL.Conversions.BooleanToReal booToReaCor(realTrue=designPar.mCoo_flow_nominal_Cor)
     "Cooling water mass flow rate" annotation (Placement(transformation(extent={{260,-218},{280,-198}})));
   Buildings.ThermalZones.EnergyPlus_9_6_0.OpaqueConstruction attFloCor(surfaceName="Core_ZN_ceiling")
     "Floor of the attic above the living room" annotation (Placement(transformation(
-        extent={{10,-10},{-10,10}},
+        extent={{-10,-10},{10,10}},
         rotation=270,
         origin={442,-216})));
   Buildings.Controls.OBC.RadiantSystems.Cooling.HighMassSupplyTemperature_TRoomRelHum conCoo4(TSupSet_min=289.15)
@@ -221,6 +221,12 @@ model RadiantHeatingCooling_TRoom
     annotation (Placement(transformation(extent={{120,10},{140,30}})));
   Modelica.Blocks.Routing.DeMultiplex demux_PhiRoo(n=5)
     annotation (Placement(transformation(extent={{120,-20},{140,0}})));
+  BaseClasses.DesignPar designPar(
+    QCoo_flow_nominal_Sou=-5000,
+    QCoo_flow_nominal_Eas=-4000,
+    QCoo_flow_nominal_Nor=-5000,
+    QCoo_flow_nominal_Wes=-4500,
+    QCoo_flow_nominal_Cor=-5000) annotation (Placement(transformation(extent={{280,60},{300,80}})));
 protected
   inner Buildings.ThermalZones.EnergyPlus_9_6_0.Building building(
     idfName=idfName,
@@ -232,14 +238,13 @@ protected
 equation
   connect(masFloSouCoo.ports[1], slaCeiSou.port_a) annotation (Line(points={{322,24},{342,24}}, color={0,127,255}));
   connect(prePre.ports[1], slaCeiSou.port_b) annotation (Line(points={{394,24},{362,24}}, color={0,127,255}));
-  connect(booToRea.y,masFloSouCoo.m_flow_in)
-    annotation (Line(points={{282,32},{300,32}},                         color={0,0,127}));
+  connect(booToReaSou.y, masFloSouCoo.m_flow_in) annotation (Line(points={{282,32},{300,32}}, color={0,0,127}));
   connect(attFlo.heaPorFro, slaCeiSou.surf_a)
     annotation (Line(points={{442,34},{442,44},{356,44},{356,34}}, color={191,0,0}));
   connect(slaCeiSou.surf_b, attFlo.heaPorBac)
     annotation (Line(points={{356,14},{356,4},{442,4},{442,14.2}}, color={191,0,0}));
-  connect(conCoo.on, booToRea.u) annotation (Line(points={{222,42},{250,42},{250,32},{258,32}},
-                              color={255,0,255}));
+  connect(conCoo.on, booToReaSou.u)
+    annotation (Line(points={{222,42},{250,42},{250,32},{258,32}}, color={255,0,255}));
   connect(conCoo.TRooSet, TSetRooCoo.y)
     annotation (Line(points={{198,50},{142,50}},     color={0,0,127}));
   connect(conCoo.TSupSet, masFloSouCoo.T_in) annotation (Line(points={{222,50},{290,50},{290,28},{300,28}},
@@ -247,11 +252,11 @@ equation
   connect(masFloSouCoo1.ports[1], slaCeiNor.port_a)
     annotation (Line(points={{322,-96},{342,-96}}, color={0,127,255}));
   connect(prePre1.ports[1], slaCeiNor.port_b) annotation (Line(points={{394,-96},{362,-96}}, color={0,127,255}));
-  connect(booToRea1.y, masFloSouCoo1.m_flow_in) annotation (Line(points={{282,-88},{300,-88}},  color={0,0,127}));
+  connect(booToReaNor.y, masFloSouCoo1.m_flow_in) annotation (Line(points={{282,-88},{300,-88}}, color={0,0,127}));
   connect(attFloNor.heaPorFro, slaCeiNor.surf_a)
     annotation (Line(points={{442,-86},{442,-76},{356,-76},{356,-86}}, color={191,0,0}));
-  connect(conCoo1.on, booToRea1.u)
-    annotation (Line(points={{222,-78},{250,-78},{250,-88},{258,-88}},     color={255,0,255}));
+  connect(conCoo1.on, booToReaNor.u)
+    annotation (Line(points={{222,-78},{250,-78},{250,-88},{258,-88}}, color={255,0,255}));
   connect(conCoo1.TSupSet, masFloSouCoo1.T_in)
     annotation (Line(points={{222,-70},{290,-70},{290,-92},{300,-92}},  color={0,0,127}));
   connect(slaCeiNor.surf_b, attFloNor.heaPorBac)
@@ -259,10 +264,10 @@ equation
   connect(masFloSouCoo2.ports[1], slaCeiEas.port_a)
     annotation (Line(points={{322,-36},{342,-36}}, color={0,127,255}));
   connect(prePre2.ports[1], slaCeiEas.port_b) annotation (Line(points={{394,-36},{362,-36}}, color={0,127,255}));
-  connect(booToRea2.y, masFloSouCoo2.m_flow_in) annotation (Line(points={{282,-28},{300,-28}}, color={0,0,127}));
+  connect(booToReaEas.y, masFloSouCoo2.m_flow_in) annotation (Line(points={{282,-28},{300,-28}}, color={0,0,127}));
   connect(attFloEas.heaPorFro, slaCeiEas.surf_a)
     annotation (Line(points={{442,-26},{442,-16},{356,-16},{356,-26}}, color={191,0,0}));
-  connect(conCoo2.on, booToRea2.u)
+  connect(conCoo2.on, booToReaEas.u)
     annotation (Line(points={{222,-18},{250,-18},{250,-28},{258,-28}}, color={255,0,255}));
   connect(conCoo2.TSupSet, masFloSouCoo2.T_in)
     annotation (Line(points={{222,-10},{290,-10},{290,-32},{300,-32}}, color={0,0,127}));
@@ -271,13 +276,12 @@ equation
   connect(masFloSouCoo3.ports[1], slaCeiWes.port_a)
     annotation (Line(points={{322,-156},{342,-156}}, color={0,127,255}));
   connect(prePre3.ports[1], slaCeiWes.port_b) annotation (Line(points={{394,-156},{362,-156}}, color={0,127,255}));
-  connect(booToRea3.y, masFloSouCoo3.m_flow_in) annotation (Line(points={{282,-148},{300,-148}},
-                                                                                             color={0,0,127}));
+  connect(booToReaWes.y, masFloSouCoo3.m_flow_in)
+    annotation (Line(points={{282,-148},{300,-148}}, color={0,0,127}));
   connect(attFloWes.heaPorFro, slaCeiWes.surf_a)
     annotation (Line(points={{442,-146},{442,-136},{356,-136},{356,-146}}, color={191,0,0}));
-  connect(conCoo3.on, booToRea3.u)
-    annotation (Line(points={{222,-138},{250,-138},{250,-148},{258,-148}},
-                                                                   color={255,0,255}));
+  connect(conCoo3.on, booToReaWes.u)
+    annotation (Line(points={{222,-138},{250,-138},{250,-148},{258,-148}}, color={255,0,255}));
   connect(conCoo3.TSupSet, masFloSouCoo3.T_in)
     annotation (Line(points={{222,-130},{290,-130},{290,-152},{300,-152}},
                                                                    color={0,0,127}));
@@ -286,18 +290,13 @@ equation
   connect(masFloSouCoo4.ports[1], slaCeiCor.port_a)
     annotation (Line(points={{322,-216},{342,-216}}, color={0,127,255}));
   connect(prePre4.ports[1], slaCeiCor.port_b) annotation (Line(points={{394,-216},{362,-216}}, color={0,127,255}));
-  connect(booToRea4.y, masFloSouCoo4.m_flow_in) annotation (Line(points={{282,-208},{300,-208}},
-                                                                                               color={0,0,127}));
-  connect(conCoo4.on, booToRea4.u)
-    annotation (Line(points={{222,-198},{250,-198},{250,-208},{258,-208}},
-                                                                       color={255,0,255}));
+  connect(booToReaCor.y, masFloSouCoo4.m_flow_in)
+    annotation (Line(points={{282,-208},{300,-208}}, color={0,0,127}));
+  connect(conCoo4.on, booToReaCor.u)
+    annotation (Line(points={{222,-198},{250,-198},{250,-208},{258,-208}}, color={255,0,255}));
   connect(conCoo4.TSupSet, masFloSouCoo4.T_in)
     annotation (Line(points={{222,-190},{290,-190},{290,-212},{300,-212}},
                                                                      color={0,0,127}));
-  connect(slaCeiCor.surf_a, attFloCor.heaPorBac)
-    annotation (Line(points={{356,-206},{356,-200},{442,-200},{442,-206.2}}, color={191,0,0}));
-  connect(slaCeiCor.surf_b, attFloCor.heaPorFro)
-    annotation (Line(points={{356,-226},{356,-232},{442,-232},{442,-226}}, color={191,0,0}));
   connect(TSetRooCoo.y, conCoo2.TRooSet)
     annotation (Line(points={{142,50},{192,50},{192,-10},{198,-10}}, color={0,0,127}));
   connect(TSetRooCoo.y, conCoo1.TRooSet)
@@ -330,6 +329,10 @@ equation
     annotation (Line(points={{140,-8.6},{180,-8.6},{180,-144},{198,-144}}, color={0,0,127}));
   connect(demux_PhiRoo.y[5], conCoo4.phiRoo)
     annotation (Line(points={{140,-7.2},{180,-7.2},{180,-204},{198,-204}}, color={0,0,127}));
+  connect(slaCeiCor.surf_a, attFloCor.heaPorFro)
+    annotation (Line(points={{356,-206},{356,-196},{442,-196},{442,-206}}, color={191,0,0}));
+  connect(slaCeiCor.surf_b, attFloCor.heaPorBac)
+    annotation (Line(points={{356,-226},{356,-236},{442,-236},{442,-225.8}}, color={191,0,0}));
   annotation (
     __Dymola_Commands(
       file="modelica://Buildings/Resources/Scripts/Dymola/ThermalZones/EnergyPlus_9_6_0/Examples/SingleFamilyHouse/RadiantHeatingCooling_TRoom.mos" "Simulate and plot"),
