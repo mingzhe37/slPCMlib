@@ -3,9 +3,17 @@ model Unconditioned "Open loop model of one floor"
   extends Modelica.Icons.Example;
   replaceable package Medium=Buildings.Media.Air
     "Medium for air";
+
   parameter String weaName=Modelica.Utilities.Files.loadResource(
-    "modelica://Buildings/Resources/weatherdata/USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.mos")
+    "modelica://Buildings/Resources/weatherdata/USA_GA_Atlanta-Hartsfield-Jackson.Intl.AP.722190_TMY3.mos")
     "Name of the weather file";
+  parameter String epwName=Modelica.Utilities.Files.loadResource(
+        "modelica://Buildings/Resources/weatherdata/USA_GA_Atlanta-Hartsfield-Jackson.Intl.AP.722190_TMY3.epw")
+    "Name of the weather file";
+  parameter String idfName=Modelica.Utilities.Files.loadResource(
+        "modelica://Buildings/Resources/weatherdata/ASHRAE901_OfficeSmall_STD2004_Atlanta_IdealLoadSystem_updated_v96.idf")
+    "Name of the weather file";
+
   final parameter Modelica.Units.SI.MassFlowRate mOut_flow[4]=0.3/3600*{flo.VRooSou,
       flo.VRooEas,flo.VRooNor,flo.VRooWes}*1.2
     "Outside air infiltration for each exterior room";
@@ -13,20 +21,19 @@ model Unconditioned "Open loop model of one floor"
     "Weather data reader" annotation (Placement(transformation(extent={{-80,40},{-60,60}})));
   Buildings.BoundaryConditions.WeatherData.Bus weaBus "Weather data bus"
     annotation (Placement(transformation(extent={{-50,40},{-30,60}})));
-  Buildings.ThermalZones.EnergyPlus_9_6_0.Examples.SmallOffice.BaseClasses.Floor flo(
+  BaseClasses.Floor                                                              flo(
     redeclare package Medium=Medium,
-    nor(
-      T_start=275.15),
-    wes(
-      T_start=275.15),
-    eas(
-      T_start=275.15),
-    sou(
-      T_start=275.15),
-    cor(
-      T_start=275.15))
+    nor(T_start=273.15 + 20),
+    wes(T_start=273.15 + 20),
+    eas(T_start=273.15 + 20),
+    sou(T_start=273.15 + 20),
+    cor(T_start=273.15 + 20),
+    idfName=idfName,
+    epwName=epwName,
+    weaName=weaName)
     "One floor of the office building"
     annotation (Placement(transformation(extent={{32,-2},{86,28}})));
+
   // Above, the volume V is for Spawn obtained in the initial equation section.
   // Hence it is not known when the model is compiled. This leads to a
   // warning in Dymola and an error in Optimica (Modelon#2020031339000191)
@@ -86,8 +93,11 @@ equation
     __Dymola_Commands(
       file="modelica://Buildings/Resources/Scripts/Dymola/ThermalZones/EnergyPlus_9_6_0/Examples/SmallOffice/Unconditioned.mos" "Simulate and plot"),
     experiment(
-      StopTime=172800,
-      Tolerance=1e-06),
+      StartTime=16761600,
+      StopTime=17366400,
+      Interval=300,
+      Tolerance=1e-07,
+      __Dymola_Algorithm="Cvode"),
     Documentation(
       info="<html>
 <p>
