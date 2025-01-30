@@ -24,21 +24,20 @@ model RadiantHeatingCooling_TRoom
     "Nominal heat flow rate for cooling";
   parameter Modelica.Units.SI.MassFlowRate mCoo_flow_nominal=-QCoo_flow_nominal
       /4200/5 "Design water mass flow rate for heating";
-  parameter Buildings.HeatTransfer.Data.OpaqueConstructions.Generic layCeiSou(nLay=4, material={
-        Buildings.HeatTransfer.Data.Solids.Concrete(x=0.08),Buildings.HeatTransfer.Data.Solids.InsulationBoard(x=
-        0.10),Buildings.HeatTransfer.Data.Solids.Concrete(x=0.18),Buildings.HeatTransfer.Data.Solids.Concrete(x=
-        0.02)}) "Material layers from surface a to b (8cm concrete, 10 cm insulation, 18+2 cm concrete)"
-    annotation (Placement(transformation(extent={{320,60},{340,80}})));
+  parameter Buildings.HeatTransfer.Data.OpaqueConstructions.Generic layCeiSou(nLay=3, material={gypSum,layPCM,
+        insRoof})
+                "Material layers from surface a to b (8cm concrete, 10 cm insulation, 18+2 cm concrete)"
+    annotation (Placement(transformation(extent={{440,60},{460,80}})));
   // Floor slab
   // Ceiling slab
   Buildings.Fluid.HeatExchangers.RadiantSlabs.ParallelCircuitsSlab slaCeiSou(
     redeclare package Medium = MediumW,
     allowFlowReversal=false,
     layers=layCeiSou,
-    iLayPip=3,
+    iLayPip=2,
     pipe=Buildings.Fluid.Data.Pipes.PEX_DN_15(),
     sysTyp=Buildings.Fluid.HeatExchangers.RadiantSlabs.Types.SystemType.Ceiling_Wall_or_Capillary,
-    disPip=0.2,
+    disPip=designPar.Radiant_loop_spacing,
     nCir=4,
     A=flo.sou.AFlo,
     m_flow_nominal=designPar.mCoo_flow_nominal_Sou,
@@ -58,7 +57,7 @@ model RadiantHeatingCooling_TRoom
     annotation (Placement(transformation(extent={{302,14},{322,34}})));
   Buildings.Controls.OBC.CDL.Reals.Sources.Constant TSetRooCoo(k(
       final unit="K",
-      displayUnit="degC") = 299.15, y(final unit="K", displayUnit="degC")) "Room temperture set point for cooling"
+      displayUnit="degC") = 297.15, y(final unit="K", displayUnit="degC")) "Room temperture set point for cooling"
     annotation (Placement(transformation(extent={{120,40},{140,60}})));
   Buildings.Controls.OBC.CDL.Conversions.BooleanToReal booToReaSou(realTrue=designPar.mCoo_flow_nominal_Sou)
     "Cooling water mass flow rate" annotation (Placement(transformation(extent={{260,22},{280,42}})));
@@ -80,10 +79,10 @@ model RadiantHeatingCooling_TRoom
     redeclare package Medium = MediumW,
     allowFlowReversal=false,
     layers=layCeiSou,
-    iLayPip=3,
+    iLayPip=2,
     pipe=Buildings.Fluid.Data.Pipes.PEX_DN_15(),
     sysTyp=Buildings.Fluid.HeatExchangers.RadiantSlabs.Types.SystemType.Ceiling_Wall_or_Capillary,
-    disPip=0.2,
+    disPip=designPar.Radiant_loop_spacing,
     nCir=4,
     A=flo.nor.AFlo,
     m_flow_nominal=designPar.mCoo_flow_nominal_Nor,
@@ -114,10 +113,10 @@ model RadiantHeatingCooling_TRoom
     redeclare package Medium = MediumW,
     allowFlowReversal=false,
     layers=layCeiSou,
-    iLayPip=3,
+    iLayPip=2,
     pipe=Buildings.Fluid.Data.Pipes.PEX_DN_15(),
     sysTyp=Buildings.Fluid.HeatExchangers.RadiantSlabs.Types.SystemType.Ceiling_Wall_or_Capillary,
-    disPip=0.2,
+    disPip=designPar.Radiant_loop_spacing,
     nCir=4,
     A=flo.eas.AFlo,
     m_flow_nominal=designPar.mCoo_flow_nominal_Eas,
@@ -148,10 +147,10 @@ model RadiantHeatingCooling_TRoom
     redeclare package Medium = MediumW,
     allowFlowReversal=false,
     layers=layCeiSou,
-    iLayPip=3,
+    iLayPip=2,
     pipe=Buildings.Fluid.Data.Pipes.PEX_DN_15(),
     sysTyp=Buildings.Fluid.HeatExchangers.RadiantSlabs.Types.SystemType.Ceiling_Wall_or_Capillary,
-    disPip=0.2,
+    disPip=designPar.Radiant_loop_spacing,
     nCir=4,
     A=flo.wes.AFlo,
     m_flow_nominal=designPar.mCoo_flow_nominal_Wes,
@@ -178,19 +177,14 @@ model RadiantHeatingCooling_TRoom
         origin={442,-156})));
   Buildings.Controls.OBC.RadiantSystems.Cooling.HighMassSupplyTemperature_TRoomRelHum conCoo3(TSupSet_min=289.15)
     "Controller for radiant cooling" annotation (Placement(transformation(extent={{200,-146},{220,-126}})));
-  parameter Buildings.HeatTransfer.Data.OpaqueConstructions.Generic layCeiRev(nLay=4, material={
-        Buildings.HeatTransfer.Data.Solids.Concrete(x=0.08),Buildings.HeatTransfer.Data.Solids.InsulationBoard(x=
-        0.10),Buildings.HeatTransfer.Data.Solids.Concrete(x=0.18),Buildings.HeatTransfer.Data.Solids.Concrete(x=
-        0.02)}) "Reversed layer configuration for core zone, as a walkaround to use living ceiling directly"
-    annotation (Placement(transformation(extent={{360,60},{380,80}})));
   Buildings.Fluid.HeatExchangers.RadiantSlabs.ParallelCircuitsSlab slaCeiCor(
     redeclare package Medium = MediumW,
     allowFlowReversal=false,
-    layers=layCeiRev,
-    iLayPip=3,
+    layers=layCeiSou,
+    iLayPip=2,
     pipe=Buildings.Fluid.Data.Pipes.PEX_DN_15(),
     sysTyp=Buildings.Fluid.HeatExchangers.RadiantSlabs.Types.SystemType.Ceiling_Wall_or_Capillary,
-    disPip=0.2,
+    disPip=designPar.Radiant_loop_spacing,
     nCir=4,
     A=flo.cor.AFlo,
     m_flow_nominal=designPar.mCoo_flow_nominal_Cor,
@@ -226,7 +220,19 @@ model RadiantHeatingCooling_TRoom
     QCoo_flow_nominal_Eas=-4000,
     QCoo_flow_nominal_Nor=-5000,
     QCoo_flow_nominal_Wes=-4500,
-    QCoo_flow_nominal_Cor=-5000) annotation (Placement(transformation(extent={{280,60},{300,80}})));
+    QCoo_flow_nominal_Cor=-5000,
+    Radiant_loop_spacing=0.015)  annotation (Placement(transformation(extent={{280,60},{300,80}})));
+  parameter Buildings.HeatTransfer.Data.Resistances.Carpet insRoof(R=4.89198869)
+    annotation (Placement(transformation(extent={{360,60},{380,80}})));
+  parameter Buildings.HeatTransfer.Data.Solids.GypsumBoard gypSum(x=0.016)
+    annotation (Placement(transformation(extent={{400,60},{420,80}})));
+  parameter Buildings.HeatTransfer.Data.Solids.Generic layPCM(
+    x=0.02,
+    k=0.2,
+    c=2.0,
+    d=844.0)
+    "layer thickness can range from 10-30 mm, now 20 mm. Accordingly, 5/8\" (15.9 mm) diameter pipe at 6\" spacing can be good practice. ATP18"
+    annotation (Placement(transformation(extent={{380,60},{400,80}})));
 protected
   inner Buildings.ThermalZones.EnergyPlus_9_6_0.Building building(
     idfName=idfName,

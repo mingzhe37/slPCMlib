@@ -21,5 +21,7 @@ record DesignPar "Design parameters for radiant cooling system"
   parameter Real QCoo_flow_nominal_Cor "Nominal heat flow rate for cooling" annotation(unit="W");
   parameter Real mCoo_flow_nominal_Cor=-QCoo_flow_nominal_Cor/4200/5
                                        "Design water mass flow rate for heating" annotation(unit="kg/s");
+
+  parameter Real Radiant_loop_spacing "Design radiant loop spacing" annotation(unit="m");
   annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(coordinateSystem(preserveAspectRatio=false)));
 end DesignPar;
