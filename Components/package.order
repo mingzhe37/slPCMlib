@@ -3,6 +3,7 @@ linearT
 HeatCapacitorSlPCMlib
 SingleLayerSlPCMlib
 PCMlayer_1D_1port_1symmetry
+PCMlayer_1D_2ports
 PCMtank_hA
 PCMtank_heaFlo
 modSwi
