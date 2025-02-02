@@ -1,6 +1,7 @@
 within slPCMlib.Components.RadiantSlabs.BaseClasses;
 partial model Slab "Base class for radiant slab"
-  parameter slPCMlib.Components.RadiantSlabs.Types.SystemType sysTyp "Radiant system type";
+  parameter slPCMlib.Components.RadiantSlabs.Types.SystemType sysTyp
+    "Radiant system type";
 
   parameter Modelica.Units.SI.Distance disPip "Pipe distance";
 
@@ -8,8 +9,10 @@ partial model Slab "Base class for radiant slab"
     "Record for pipe geometry and material"
     annotation (choicesAllMatching = true, Placement(transformation(extent={{-60,60},{-40,80}})));
 
-  parameter Buildings.HeatTransfer.Data.OpaqueConstructions.Generic layers(nLay(min=2))
-    "Definition of the construction, which must have at least two material layers" annotation (
+  parameter Buildings.HeatTransfer.Data.OpaqueConstructions.Generic layers(nLay(min=
+          2))
+    "Definition of the construction, which must have at least two material layers"
+    annotation (
     Dialog(group="Construction"),
     choicesAllMatching=true,
     Placement(transformation(extent={{-20,60},{0,80}})));

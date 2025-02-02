@@ -3,13 +3,15 @@ model StepResponseEpsilonNTU
   "Model that tests the radiant slab with epsilon-NTU configuration"
   extends Modelica.Icons.Example;
  package Medium = Buildings.Media.Water;
-  Buildings.Fluid.Sources.Boundary_ph sin(redeclare package Medium = Medium, nPorts=1) "Sink"
+  Buildings.Fluid.Sources.Boundary_ph sin(redeclare package Medium = Medium,
+      nPorts=1) "Sink"
     annotation (Placement(transformation(extent={{90,-30},{70,-10}})));
   Buildings.Fluid.Sources.MassFlowSource_T sou(
     redeclare package Medium = Medium,
     use_m_flow_in=true,
     T=298.15,
-    nPorts=1) "Source" annotation (Placement(transformation(extent={{-30,-30},{-10,-10}})));
+    nPorts=1) "Source"
+    annotation (Placement(transformation(extent={{-30,-30},{-10,-10}})));
   Modelica.Blocks.Sources.Pulse pulse(
     period=86400,
     startTime=0,
@@ -26,7 +28,8 @@ model StepResponseEpsilonNTU
     disPip=0.2,
     A=A,
     energyDynamics=Modelica.Fluid.Types.Dynamics.FixedInitial,
-    heatTransfer=slPCMlib.Components.RadiantSlabs.Types.HeatTransfer.FiniteDifference) "Slabe with embedded pipes"
+    heatTransfer=slPCMlib.Components.RadiantSlabs.Types.HeatTransfer.FiniteDifference)
+    "Slabe with embedded pipes"
     annotation (Placement(transformation(extent={{10,-30},{30,-10}})));
 
   parameter Modelica.Units.SI.MassFlowRate m_flow_nominal=0.167
@@ -60,8 +63,8 @@ model StepResponseEpsilonNTU
   Modelica.Thermal.HeatTransfer.Components.BodyRadiation hRadBel(Gr=A/(1/0.7 + 1
         /0.7 - 1)) "Radiative heat transfer below the slab"
     annotation (Placement(transformation(extent={{-20,-100},{0,-80}})));
-  parameter Buildings.HeatTransfer.Data.OpaqueConstructions.Generic layers(nLay=3, material={
-        Buildings.HeatTransfer.Data.Solids.Generic(
+  parameter Buildings.HeatTransfer.Data.OpaqueConstructions.Generic layers(nLay=3,
+      material={Buildings.HeatTransfer.Data.Solids.Generic(
         x=0.08,
         k=1.13,
         c=1000,
@@ -74,12 +77,14 @@ model StepResponseEpsilonNTU
         x=0.2,
         k=1.8,
         c=1100,
-        d=2400)}) "Material layers from surface a to b (8cm concrete, 5 cm insulation, 20 cm reinforced concrete)"
+        d=2400)})
+    "Material layers from surface a to b (8cm concrete, 5 cm insulation, 20 cm reinforced concrete)"
     annotation (Placement(transformation(extent={{60,60},{80,80}})));
   parameter Buildings.Fluid.Data.Pipes.PEX_RADTEST pipe "Pipe material"
     annotation (Placement(transformation(extent={{60,20},{80,40}})));
-  Buildings.Fluid.Sensors.TemperatureTwoPort TOut(redeclare package Medium = Medium, m_flow_nominal=m_flow_nominal)
-    "Outlet temperature of the slab" annotation (Placement(transformation(extent={{40,-30},{60,-10}})));
+  Buildings.Fluid.Sensors.TemperatureTwoPort TOut(redeclare package Medium =
+        Medium, m_flow_nominal=m_flow_nominal) "Outlet temperature of the slab"
+    annotation (Placement(transformation(extent={{40,-30},{60,-10}})));
 equation
   connect(pulse.y, sou.m_flow_in)       annotation (Line(
       points={{-59,-12},{-30,-12}},

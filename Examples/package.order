@@ -3,6 +3,9 @@ exampleHeatCapacitorPCM_2
 exampleHeatCapacitorPCM_3
 heatConduction1D
 Case600FF_PCM_slPCMlib_SingleLayerPCM
+secondaryLoopPCMsys
 examplePCMtank
+examplePCMtank_water
+example_HPWatPCM
 hpTesMPC
 PCMtank

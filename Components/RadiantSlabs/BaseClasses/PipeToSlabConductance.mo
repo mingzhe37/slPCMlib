@@ -110,7 +110,8 @@ end kc_overall_IN_con;
 protected
 record kc_turbulent_IN_con
   "Input record for function kc_turbulent and kc_turbulent_KC"
-  extends Modelica.Fluid.Dissipation.Utilities.Records.HeatTransfer.StraightPipe;
+  extends
+      Modelica.Fluid.Dissipation.Utilities.Records.HeatTransfer.StraightPipe;
 
   Modelica.Fluid.Dissipation.Utilities.Types.Roughness roughness=Modelica.Fluid.Dissipation.Utilities.Types.Roughness.Considered
     "Choice of considering surface roughness"
@@ -156,7 +157,8 @@ equation
      IN_con=kc_IN_con, IN_var=kc_IN_var);
   RTot = 1/hCon/APip + RFic + RWal;
 
-  if heatTransfer == slPCMlib.Components.RadiantSlabs.Types.HeatTransfer.EpsilonNTU then
+  if heatTransfer == slPCMlib.Components.RadiantSlabs.Types.HeatTransfer.EpsilonNTU
+       then
     Q_flow = Functions.heatFlowRate(T_a=T_a,
                           T_b=T_b,
                           T_s=solid.T,

@@ -6,7 +6,8 @@ model SingleCircuitMultipleCircuitEpsilonNTU
   Buildings.Fluid.Sources.Boundary_ph sin(
     redeclare package Medium = Medium,
     nPorts=3,
-    p(displayUnit="Pa") = 300000) "Sink" annotation (Placement(transformation(extent={{132,-30},{112,-10}})));
+    p(displayUnit="Pa") = 300000) "Sink"
+    annotation (Placement(transformation(extent={{132,-30},{112,-10}})));
   Modelica.Blocks.Sources.Pulse pulse(
     startTime=0,
     amplitude=50*400,
@@ -24,7 +25,8 @@ model SingleCircuitMultipleCircuitEpsilonNTU
     disPip=0.2,
     A=A,
     energyDynamics=Modelica.Fluid.Types.Dynamics.FixedInitial,
-    from_dp=true) "Slabe with embedded pipes" annotation (Placement(transformation(extent={{-14,10},{6,30}})));
+    from_dp=true) "Slabe with embedded pipes"
+    annotation (Placement(transformation(extent={{-14,10},{6,30}})));
 
   parameter Modelica.Units.SI.MassFlowRate m_flow_nominal=0.167
     "Nominal mass flow rate for each circuit";
@@ -41,8 +43,8 @@ model SingleCircuitMultipleCircuitEpsilonNTU
   Modelica.Thermal.HeatTransfer.Components.ThermalConductor conBel1(G=20*A)
     "Combined convection and radiation resistance below the slab"
     annotation (Placement(transformation(extent={{-40,-90},{-20,-70}})));
-  parameter Buildings.HeatTransfer.Data.OpaqueConstructions.Generic layers(nLay=3, material={
-        Buildings.HeatTransfer.Data.Solids.Generic(
+  parameter Buildings.HeatTransfer.Data.OpaqueConstructions.Generic layers(nLay=3,
+      material={Buildings.HeatTransfer.Data.Solids.Generic(
         x=0.08,
         k=1.13,
         c=1000,
@@ -55,7 +57,8 @@ model SingleCircuitMultipleCircuitEpsilonNTU
         x=0.2,
         k=1.8,
         c=1100,
-        d=2400)}) "Material layers from surface a to b (8cm concrete, 5 cm insulation, 20 cm reinforced concrete)"
+        d=2400)})
+    "Material layers from surface a to b (8cm concrete, 5 cm insulation, 20 cm reinforced concrete)"
     annotation (Placement(transformation(extent={{80,100},{100,120}})));
   parameter Buildings.Fluid.Data.Pipes.PEX_RADTEST pipe "Pipe material"
     annotation (Placement(transformation(extent={{80,72},{100,92}})));
@@ -72,7 +75,8 @@ model SingleCircuitMultipleCircuitEpsilonNTU
     disPip=0.2,
     A=A,
     energyDynamics=Modelica.Fluid.Types.Dynamics.FixedInitial,
-    from_dp=true) "Slabe with embedded pipes" annotation (Placement(transformation(extent={{10,-30},{30,-10}})));
+    from_dp=true) "Slabe with embedded pipes"
+    annotation (Placement(transformation(extent={{10,-30},{30,-10}})));
 
   Modelica.Thermal.HeatTransfer.Components.ThermalConductor conBel2(G=20*A)
     "Combined convection and radiation resistance below the slab"
@@ -97,17 +101,21 @@ model SingleCircuitMultipleCircuitEpsilonNTU
   Modelica.Thermal.HeatTransfer.Components.ThermalConductor conAbo3(G=nCir*20*A)
     "Combined convection and radiation resistance above the slab"
     annotation (Placement(transformation(extent={{-20,50},{-40,70}})));
-  Buildings.Fluid.Sensors.TemperatureTwoPort senTem1(redeclare package Medium = Medium, m_flow_nominal=
-        m_flow_nominal/2) "Temperature sensor" annotation (Placement(transformation(extent={{70,10},{90,30}})));
-  Buildings.Fluid.Sensors.TemperatureTwoPort senTem2(redeclare package Medium = Medium, m_flow_nominal=
-        m_flow_nominal/2) "Temperature sensor" annotation (Placement(transformation(extent={{70,-30},{90,-10}})));
-  Buildings.Fluid.Sensors.TemperatureTwoPort senTem3(redeclare package Medium = Medium, m_flow_nominal=nCir*
-        m_flow_nominal) "Temperature sensor" annotation (Placement(transformation(extent={{70,-70},{90,-50}})));
+  Buildings.Fluid.Sensors.TemperatureTwoPort senTem1(redeclare package Medium
+      = Medium, m_flow_nominal=m_flow_nominal/2) "Temperature sensor"
+    annotation (Placement(transformation(extent={{70,10},{90,30}})));
+  Buildings.Fluid.Sensors.TemperatureTwoPort senTem2(redeclare package Medium
+      = Medium, m_flow_nominal=m_flow_nominal/2) "Temperature sensor"
+    annotation (Placement(transformation(extent={{70,-30},{90,-10}})));
+  Buildings.Fluid.Sensors.TemperatureTwoPort senTem3(redeclare package Medium
+      = Medium, m_flow_nominal=nCir*m_flow_nominal) "Temperature sensor"
+    annotation (Placement(transformation(extent={{70,-70},{90,-50}})));
   Buildings.Fluid.Sources.Boundary_pT sou(
     redeclare package Medium = Medium,
     nPorts=3,
     use_p_in=true,
-    T=313.15) "Source" annotation (Placement(transformation(extent={{-70,-30},{-50,-10}})));
+    T=313.15) "Source"
+    annotation (Placement(transformation(extent={{-70,-30},{-50,-10}})));
   parameter Integer nCir=2 "Number of parallel circuits for slab 3";
 equation
   connect(TBel.port, conBel1.port_a)    annotation (Line(
