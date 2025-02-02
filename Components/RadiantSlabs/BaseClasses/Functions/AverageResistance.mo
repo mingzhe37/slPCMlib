@@ -6,7 +6,8 @@ function AverageResistance
   input Modelica.Units.SI.Diameter dPipOut "pipe outside diameter";
   input Modelica.Units.SI.ThermalConductivity k
     "pipe level construction element thermal conductivity";
-  input slPCMlib.Components.RadiantSlabs.Types.SystemType sysTyp "Type of radiant system";
+  input slPCMlib.Components.RadiantSlabs.Types.SystemType sysTyp
+    "Type of radiant system";
   input Modelica.Units.SI.ThermalConductivity kIns
     "floor slab insulation thermal conductivity";
   input Modelica.Units.SI.Thickness dIns "floor slab insulation thickness";
@@ -36,13 +37,15 @@ algorithm
     Rx := disPip*(Modelica.Math.log(disPip/Modelica.Constants.pi/dPipOut) + infSum)
           /(2*Modelica.Constants.pi*k);
     fac := 0; // not needed.
-  elseif sysTyp == slPCMlib.Components.RadiantSlabs.Types.SystemType.Ceiling_Wall_or_Capillary then
+  elseif sysTyp == slPCMlib.Components.RadiantSlabs.Types.SystemType.Ceiling_Wall_or_Capillary
+       then
     // Branch for radiant ceilings, radiant walls, and systems with capillary heat exchangers
     cri := disPip/dPipOut;
     fac := if (cri >= 5.8) then Modelica.Math.log(cri/Modelica.Constants.pi) else (cri/Modelica.Constants.pi/3);
     Rx := disPip/2/Modelica.Constants.pi/k * fac;
   else
-    assert(sysTyp == slPCMlib.Components.RadiantSlabs.Types.SystemType.Floor or sysTyp == slPCMlib.Components.RadiantSlabs.Types.SystemType.Ceiling_Wall_or_Capillary,
+    assert(sysTyp == slPCMlib.Components.RadiantSlabs.Types.SystemType.Floor
+       or sysTyp == slPCMlib.Components.RadiantSlabs.Types.SystemType.Ceiling_Wall_or_Capillary,
       "Invalid value for sysTyp in \"Buildings.Fluid.HeatExchangers.RadiantSlabs.BaseClasses.Functions.AverageResistance\"
     Check parameters of the radiant slab model.");
     cri := 0;

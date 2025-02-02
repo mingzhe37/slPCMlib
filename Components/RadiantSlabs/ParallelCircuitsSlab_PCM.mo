@@ -1,5 +1,5 @@
 within slPCMlib.Components.RadiantSlabs;
-model ParallelCircuitsSlab
+model ParallelCircuitsSlab_PCM
   "Model of multiple parallel circuits of a radiant slab"
   extends Buildings.Fluid.Interfaces.PartialTwoPort(
     port_a(p(start=p_start,
@@ -85,7 +85,7 @@ model ParallelCircuitsSlab
                           noEvent(actualStream(port_b.Xi_outflow)))
        if show_T "Medium properties in port_b";
 
-  slPCMlib.Components.RadiantSlabs.SingleCircuitSlab sla(
+  SingleCircuitSlab_PCM                              sla(
     redeclare final package Medium = Medium,
     final heatTransfer=heatTransfer,
     final sysTyp=sysTyp,
@@ -107,6 +107,7 @@ model ParallelCircuitsSlab
     final allowFlowReversal=allowFlowReversal,
     final m_flow_nominal=m_flow_nominal/nCir,
     final m_flow_small=m_flow_small/nCir,
+    PCM_thickness=PCM_thickness,
     final homotopyInitialization=homotopyInitialization,
     final from_dp=from_dp,
     final dp_nominal=dp_nominal,
@@ -119,6 +120,7 @@ model ParallelCircuitsSlab
     final stateAtSurface_b=stateAtSurface_b)
     "Single parallel circuit of the radiant slab"
     annotation (Placement(transformation(extent={{-10,-10},{10,10}})));
+  parameter Modelica.Units.SI.Length PCM_thickness=0.03 "Thickness of layer";
 protected
   parameter Medium.ThermodynamicState state_default = Medium.setState_pTX(
       T=Medium.T_default,
@@ -303,4 +305,4 @@ First implementation.
           color={0,128,255},
           thickness=1,
           smooth=Smooth.None)}));
-end ParallelCircuitsSlab;
+end ParallelCircuitsSlab_PCM;

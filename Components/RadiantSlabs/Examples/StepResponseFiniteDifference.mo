@@ -1,6 +1,7 @@
 within slPCMlib.Components.RadiantSlabs.Examples;
 model StepResponseFiniteDifference "Model that tests the radiant slab"
-  extends slPCMlib.Components.RadiantSlabs.Examples.StepResponseEpsilonNTU(sla(heatTransfer=slPCMlib.Components.RadiantSlabs.Types.HeatTransfer.FiniteDifference));
+  extends slPCMlib.Components.RadiantSlabs.Examples.StepResponseEpsilonNTU(sla(
+        heatTransfer=slPCMlib.Components.RadiantSlabs.Types.HeatTransfer.FiniteDifference));
  annotation(__Dymola_Commands(file="modelica://Buildings/Resources/Scripts/Dymola/Fluid/HeatExchangers/RadiantSlabs/Examples/StepResponseFiniteDifference.mos"
         "Simulate and plot"),
           Diagram(coordinateSystem(preserveAspectRatio=false,extent={{-100,-120},
