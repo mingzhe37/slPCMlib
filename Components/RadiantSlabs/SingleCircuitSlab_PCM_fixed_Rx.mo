@@ -1,5 +1,5 @@
 within slPCMlib.Components.RadiantSlabs;
-model SingleCircuitSlab_PCM "Model of a single circuit of a radiant slab"
+model SingleCircuitSlab_PCM_fixed_Rx "Model of a single circuit of a radiant slab"
   extends slPCMlib.Components.RadiantSlabs.BaseClasses.Slab;
   extends Buildings.Fluid.FixedResistances.BaseClasses.Pipe(
      nSeg=if heatTransfer==Types.HeatTransfer.EpsilonNTU then 1 else 5,
@@ -87,15 +87,27 @@ protected
         rotation=180,
         origin={40,76})));
 
+//   final parameter Modelica.Units.SI.ThermalInsulance Rx=
+//       slPCMlib.Components.RadiantSlabs.BaseClasses.Functions.AverageResistance(
+//       disPip=disPip,
+//       dPipOut=pipe.dOut,
+//       k=if insidePCM then PCM_layer[nSeg].k else layers.material[iLayPip].k,
+//       sysTyp=sysTyp,
+//       kIns=layers.material[iLayPip + 1].k,
+//       dIns=layers.material[iLayPip + 1].x)
+//     "Thermal insulance for average temperature in plane with pipes. Original MBL implementation";
+
   final parameter Modelica.Units.SI.ThermalInsulance Rx=
       slPCMlib.Components.RadiantSlabs.BaseClasses.Functions.AverageResistance(
       disPip=disPip,
       dPipOut=pipe.dOut,
       k=if insidePCM then PCM_layer[nSeg].k else layers.material[iLayPip].k,
       sysTyp=sysTyp,
-      kIns=layers.material[iLayPip + 1].k,
-      dIns=layers.material[iLayPip + 1].x)
-    "Thermal insulance for average temperature in plane with pipes";
+      kIns=layers.material[iLayPip].k,
+      dIns=layers.material[iLayPip].x)
+    "Thermal insulance for average temperature in plane with pipes. 
+    Changed kIns and dIns index [iLayPip] to avoid out of range issue, since when system type is ceiling
+    kIns and dIns is not used, but needed as function inputs";
 
   BaseClasses.PipeToSlabConductance fluSlaCon[nSeg](
     redeclare each final package Medium = Medium,
@@ -281,4 +293,4 @@ First implementation.
 </li>
 </ul>
 </html>"));
-end SingleCircuitSlab_PCM;
+end SingleCircuitSlab_PCM_fixed_Rx;

@@ -1,5 +1,5 @@
 within slPCMlib.Components.RadiantSlabs.Examples;
-model RadiantHeatingCooling_TRoom
+model RadiantHeatingCooling_TRoom_NoPCM
   "Example model with one thermal zone with a radiant floor where the cooling is controlled based on the room air temperature"
   extends slPCMlib.Components.RadiantSlabs.Examples.Unconditioned;
   package MediumW=Buildings.Media.Water
@@ -29,11 +29,11 @@ model RadiantHeatingCooling_TRoom
     annotation (Placement(transformation(extent={{440,60},{460,80}})));
   // Floor slab
   // Ceiling slab
-  ParallelCircuitsSlab_PCM                                         slaCeiSou(
+  Buildings.Fluid.HeatExchangers.RadiantSlabs.ParallelCircuitsSlab slaCeiSou(
     redeclare package Medium = MediumW,
     allowFlowReversal=false,
-    layers=layCeiSou,
-    iLayPip=2,
+    layers=PERClayCei,
+    iLayPip=3,
     pipe=Buildings.Fluid.Data.Pipes.PEX_DN_15(),
     sysTyp=Buildings.Fluid.HeatExchangers.RadiantSlabs.Types.SystemType.Ceiling_Wall_or_Capillary,
     disPip=designPar.Radiant_loop_spacing,
@@ -41,9 +41,7 @@ model RadiantHeatingCooling_TRoom
     A=flo.sou.AFlo,
     m_flow_nominal=designPar.mCoo_flow_nominal_Sou,
     energyDynamics=Modelica.Fluid.Types.Dynamics.FixedInitial,
-    show_T=true,
-    PCM_thickness=designPar.PCM_thickness)
-                 "Slab for ceiling with embedded pipes"
+    show_T=true) "Slab for ceiling with embedded pipes"
     annotation (Placement(transformation(extent={{342,12},{362,32}})));
   Buildings.Fluid.Sources.Boundary_ph prePre(
     redeclare package Medium = MediumW,
@@ -76,11 +74,11 @@ model RadiantHeatingCooling_TRoom
       //AFlo-zon.AFlo) < 0.1,
     //"Floor area AFlo differs from EnergyPlus floor area.");
 
-  ParallelCircuitsSlab_PCM                                         slaCeiNor(
+  Buildings.Fluid.HeatExchangers.RadiantSlabs.ParallelCircuitsSlab slaCeiNor(
     redeclare package Medium = MediumW,
     allowFlowReversal=false,
-    layers=layCeiSou,
-    iLayPip=2,
+    layers=PERClayCei,
+    iLayPip=3,
     pipe=Buildings.Fluid.Data.Pipes.PEX_DN_15(),
     sysTyp=Buildings.Fluid.HeatExchangers.RadiantSlabs.Types.SystemType.Ceiling_Wall_or_Capillary,
     disPip=designPar.Radiant_loop_spacing,
@@ -88,9 +86,7 @@ model RadiantHeatingCooling_TRoom
     A=flo.nor.AFlo,
     m_flow_nominal=designPar.mCoo_flow_nominal_Nor,
     energyDynamics=Modelica.Fluid.Types.Dynamics.FixedInitial,
-    show_T=true,
-    PCM_thickness=designPar.PCM_thickness)
-                 "Slab for ceiling with embedded pipes"
+    show_T=true) "Slab for ceiling with embedded pipes"
     annotation (Placement(transformation(extent={{342,-106},{362,-86}})));
   Buildings.Fluid.Sources.Boundary_ph prePre1(
     redeclare package Medium = MediumW,
@@ -112,11 +108,11 @@ model RadiantHeatingCooling_TRoom
         origin={442,-96})));
   Buildings.Controls.OBC.RadiantSystems.Cooling.HighMassSupplyTemperature_TRoomRelHum conCoo_nor(TSupSet_min=289.15)
     "Controller for radiant cooling" annotation (Placement(transformation(extent={{200,-86},{220,-66}})));
-  ParallelCircuitsSlab_PCM                                         slaCeiEas(
+  Buildings.Fluid.HeatExchangers.RadiantSlabs.ParallelCircuitsSlab slaCeiEas(
     redeclare package Medium = MediumW,
     allowFlowReversal=false,
-    layers=layCeiSou,
-    iLayPip=2,
+    layers=PERClayCei,
+    iLayPip=3,
     pipe=Buildings.Fluid.Data.Pipes.PEX_DN_15(),
     sysTyp=Buildings.Fluid.HeatExchangers.RadiantSlabs.Types.SystemType.Ceiling_Wall_or_Capillary,
     disPip=designPar.Radiant_loop_spacing,
@@ -124,9 +120,7 @@ model RadiantHeatingCooling_TRoom
     A=flo.eas.AFlo,
     m_flow_nominal=designPar.mCoo_flow_nominal_Eas,
     energyDynamics=Modelica.Fluid.Types.Dynamics.FixedInitial,
-    show_T=true,
-    PCM_thickness=designPar.PCM_thickness)
-                 "Slab for ceiling with embedded pipes"
+    show_T=true) "Slab for ceiling with embedded pipes"
     annotation (Placement(transformation(extent={{342,-46},{362,-26}})));
   Buildings.Fluid.Sources.Boundary_ph prePre2(
     redeclare package Medium = MediumW,
@@ -148,11 +142,11 @@ model RadiantHeatingCooling_TRoom
         origin={442,-36})));
   Buildings.Controls.OBC.RadiantSystems.Cooling.HighMassSupplyTemperature_TRoomRelHum conCoo_eas(TSupSet_min=289.15)
     "Controller for radiant cooling" annotation (Placement(transformation(extent={{200,-26},{220,-6}})));
-  ParallelCircuitsSlab_PCM                                         slaCeiWes(
+  Buildings.Fluid.HeatExchangers.RadiantSlabs.ParallelCircuitsSlab slaCeiWes(
     redeclare package Medium = MediumW,
     allowFlowReversal=false,
-    layers=layCeiSou,
-    iLayPip=2,
+    layers=PERClayCei,
+    iLayPip=3,
     pipe=Buildings.Fluid.Data.Pipes.PEX_DN_15(),
     sysTyp=Buildings.Fluid.HeatExchangers.RadiantSlabs.Types.SystemType.Ceiling_Wall_or_Capillary,
     disPip=designPar.Radiant_loop_spacing,
@@ -160,9 +154,7 @@ model RadiantHeatingCooling_TRoom
     A=flo.wes.AFlo,
     m_flow_nominal=designPar.mCoo_flow_nominal_Wes,
     energyDynamics=Modelica.Fluid.Types.Dynamics.FixedInitial,
-    show_T=true,
-    PCM_thickness=designPar.PCM_thickness)
-                 "Slab for ceiling with embedded pipes"
+    show_T=true) "Slab for ceiling with embedded pipes"
     annotation (Placement(transformation(extent={{342,-166},{362,-146}})));
   Buildings.Fluid.Sources.Boundary_ph prePre3(
     redeclare package Medium = MediumW,
@@ -184,10 +176,10 @@ model RadiantHeatingCooling_TRoom
         origin={442,-156})));
   Buildings.Controls.OBC.RadiantSystems.Cooling.HighMassSupplyTemperature_TRoomRelHum conCoo_wes(TSupSet_min=289.15)
     "Controller for radiant cooling" annotation (Placement(transformation(extent={{200,-146},{220,-126}})));
-  ParallelCircuitsSlab_PCM                                         slaCeiCor(
+  Buildings.Fluid.HeatExchangers.RadiantSlabs.ParallelCircuitsSlab slaCeiCor(
     redeclare package Medium = MediumW,
     allowFlowReversal=false,
-    layers=layCeiCor,
+    layers=PERClayCei_Cor,
     iLayPip=2,
     pipe=Buildings.Fluid.Data.Pipes.PEX_DN_15(),
     sysTyp=Buildings.Fluid.HeatExchangers.RadiantSlabs.Types.SystemType.Ceiling_Wall_or_Capillary,
@@ -196,9 +188,7 @@ model RadiantHeatingCooling_TRoom
     A=flo.cor.AFlo,
     m_flow_nominal=designPar.mCoo_flow_nominal_Cor,
     energyDynamics=Modelica.Fluid.Types.Dynamics.FixedInitial,
-    show_T=true,
-    PCM_thickness=designPar.PCM_thickness)
-                 "Slab for ceiling with embedded pipes"
+    show_T=true) "Slab for ceiling with embedded pipes"
     annotation (Placement(transformation(extent={{342,-226},{362,-206}})));
   Buildings.Fluid.Sources.Boundary_ph prePre4(
     redeclare package Medium = MediumW,
@@ -231,7 +221,7 @@ model RadiantHeatingCooling_TRoom
     QCoo_flow_nominal_Wes=-4500,
     QCoo_flow_nominal_Cor=-5000,
     Radiant_loop_spacing=0.15,
-    PCM_thickness=0.02)          annotation (Placement(transformation(extent={{280,60},{300,80}})));
+    PCM_thickness=0.02)          annotation (Placement(transformation(extent={{320,60},{340,80}})));
   parameter Buildings.HeatTransfer.Data.Solids.GypsumBoard gypSum(x=0.016)
     annotation (Placement(transformation(extent={{400,60},{420,80}})));
   parameter Buildings.HeatTransfer.Data.Solids.Generic layPCM(
@@ -252,6 +242,11 @@ model RadiantHeatingCooling_TRoom
         0.10),Buildings.HeatTransfer.Data.Solids.Concrete(x=0.18),Buildings.HeatTransfer.Data.Solids.Concrete(x=
         0.02)}) "Material layers from surface a to b (8cm concrete, 10 cm insulation, 18+2 cm concrete)"
     annotation (Placement(transformation(extent={{240,60},{260,80}})));
+  parameter Buildings.HeatTransfer.Data.OpaqueConstructions.Generic PERClayCei_Cor(nLay=4, material={
+        Buildings.HeatTransfer.Data.Solids.Concrete(x=0.02),Buildings.HeatTransfer.Data.Solids.Concrete(x=0.18),
+        Buildings.HeatTransfer.Data.Solids.InsulationBoard(x=0.10),Buildings.HeatTransfer.Data.Solids.Concrete(x=
+        0.08)}) "Material layers from surface a to b (8cm concrete, 10 cm insulation, 18+2 cm concrete)"
+    annotation (Placement(transformation(extent={{180,60},{200,80}})));
 protected
   inner Buildings.ThermalZones.EnergyPlus_9_6_0.Building building(
     idfName=idfName,
@@ -461,4 +456,4 @@ First implementation.
     Icon(
       coordinateSystem(
         extent={{-100,-280},{480,80}})));
-end RadiantHeatingCooling_TRoom;
+end RadiantHeatingCooling_TRoom_NoPCM;

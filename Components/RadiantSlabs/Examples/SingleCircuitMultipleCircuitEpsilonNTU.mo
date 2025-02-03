@@ -101,14 +101,14 @@ model SingleCircuitMultipleCircuitEpsilonNTU
   Modelica.Thermal.HeatTransfer.Components.ThermalConductor conAbo3(G=nCir*20*A)
     "Combined convection and radiation resistance above the slab"
     annotation (Placement(transformation(extent={{-20,50},{-40,70}})));
-  Buildings.Fluid.Sensors.TemperatureTwoPort senTem1(redeclare package Medium
-      = Medium, m_flow_nominal=m_flow_nominal/2) "Temperature sensor"
+  Buildings.Fluid.Sensors.TemperatureTwoPort senTem1(redeclare package Medium =
+        Medium, m_flow_nominal=m_flow_nominal/2) "Temperature sensor"
     annotation (Placement(transformation(extent={{70,10},{90,30}})));
-  Buildings.Fluid.Sensors.TemperatureTwoPort senTem2(redeclare package Medium
-      = Medium, m_flow_nominal=m_flow_nominal/2) "Temperature sensor"
+  Buildings.Fluid.Sensors.TemperatureTwoPort senTem2(redeclare package Medium =
+        Medium, m_flow_nominal=m_flow_nominal/2) "Temperature sensor"
     annotation (Placement(transformation(extent={{70,-30},{90,-10}})));
-  Buildings.Fluid.Sensors.TemperatureTwoPort senTem3(redeclare package Medium
-      = Medium, m_flow_nominal=nCir*m_flow_nominal) "Temperature sensor"
+  Buildings.Fluid.Sensors.TemperatureTwoPort senTem3(redeclare package Medium =
+        Medium, m_flow_nominal=nCir*m_flow_nominal) "Temperature sensor"
     annotation (Placement(transformation(extent={{70,-70},{90,-50}})));
   Buildings.Fluid.Sources.Boundary_pT sou(
     redeclare package Medium = Medium,

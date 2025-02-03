@@ -3,6 +3,8 @@ ParallelCircuitsSlab
 SingleCircuitSlab
 SingleCircuitSlab_PCM
 ParallelCircuitsSlab_PCM
+SingleCircuitSlab_PCM_fixed_Rx
+ParallelCircuitsSlab_PCM_fixed_Rx
 Types
 Examples
 BaseClasses

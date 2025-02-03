@@ -23,5 +23,8 @@ record DesignPar "Design parameters for radiant cooling system"
                                        "Design water mass flow rate for heating" annotation(unit="kg/s");
 
   parameter Real Radiant_loop_spacing "Design radiant loop spacing" annotation(unit="m");
+
+  parameter Real PCM_thickness "PCM layer thickness" annotation(unit="m");
+
   annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(coordinateSystem(preserveAspectRatio=false)));
 end DesignPar;

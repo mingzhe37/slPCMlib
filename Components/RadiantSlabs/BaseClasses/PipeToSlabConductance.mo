@@ -157,8 +157,7 @@ equation
      IN_con=kc_IN_con, IN_var=kc_IN_var);
   RTot = 1/hCon/APip + RFic + RWal;
 
-  if heatTransfer == slPCMlib.Components.RadiantSlabs.Types.HeatTransfer.EpsilonNTU
-       then
+  if heatTransfer == slPCMlib.Components.RadiantSlabs.Types.HeatTransfer.EpsilonNTU then
     Q_flow = Functions.heatFlowRate(T_a=T_a,
                           T_b=T_b,
                           T_s=solid.T,

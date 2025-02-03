@@ -37,8 +37,7 @@ algorithm
     Rx := disPip*(Modelica.Math.log(disPip/Modelica.Constants.pi/dPipOut) + infSum)
           /(2*Modelica.Constants.pi*k);
     fac := 0; // not needed.
-  elseif sysTyp == slPCMlib.Components.RadiantSlabs.Types.SystemType.Ceiling_Wall_or_Capillary
-       then
+  elseif sysTyp == slPCMlib.Components.RadiantSlabs.Types.SystemType.Ceiling_Wall_or_Capillary then
     // Branch for radiant ceilings, radiant walls, and systems with capillary heat exchangers
     cri := disPip/dPipOut;
     fac := if (cri >= 5.8) then Modelica.Math.log(cri/Modelica.Constants.pi) else (cri/Modelica.Constants.pi/3);

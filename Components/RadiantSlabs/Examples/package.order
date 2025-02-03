@@ -4,5 +4,6 @@ StepResponseEpsilonNTU
 StepResponseFiniteDifference
 Unconditioned
 RadiantHeatingCooling_TRoom
+RadiantHeatingCooling_TRoom_NoPCM
 RadiantHeatingCooling_TRoom_SF
 HeatPumpRadiantHeatingGroundHeatTransfer
