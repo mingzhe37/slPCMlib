@@ -27,8 +27,7 @@ model SingleCircuitSlab_PCM_fixed_Rx "Model of a single circuit of a radiant sla
 
   parameter slPCMlib.Components.RadiantSlabs.Types.HeatTransfer heatTransfer=Types.HeatTransfer.EpsilonNTU
     "Model for heat transfer between fluid and slab";
-  parameter Modelica.Units.SI.Temperature T_c_start=(T_a_start*con_b[1].layers.R
-       + T_b_start*con_a[1].layers.R)/layers.R
+  parameter Modelica.Units.SI.Temperature T_c_start=T_c_start
     "Initial construction temperature in the layer that contains the pipes, used if steadyStateInitial = false"
     annotation (Dialog(tab="Initialization", group="Construction"));
   final parameter Modelica.Units.SI.Velocity v_nominal=4*m_flow_nominal/pipe.dIn

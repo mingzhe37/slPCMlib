@@ -1,13 +1,11 @@
 within slPCMlib.Components.RadiantSlabs.Examples;
 model RadiantHeatingCooling_TRoom_SF
   "Example model with one thermal zone with a radiant floor where the cooling is controlled based on the room air temperature"
-  extends Buildings.ThermalZones.EnergyPlus_9_6_0.Examples.SingleFamilyHouse.Unconditioned(
-     building(
-        idfName=Modelica.Utilities.Files.loadResource(
-          "modelica://Buildings/Resources/Data/ThermalZones/EnergyPlus_9_6_0/Examples/SingleFamilyHouse_TwoSpeed_ZoneAirBalance/SingleFamilyHouse_TwoSpeed_ZoneAirBalance_aboveSoil.idf")));
+  extends slPCMlib.Components.RadiantSlabs.Examples.Unconditioned_SF(zon(zoneName="living_unit1"), weaDat(relHumSou=
+         Buildings.BoundaryConditions.Types.DataSource.Parameter, relHum=0.4));
   package MediumW=Buildings.Media.Water
     "Water medium";
-  constant Modelica.Units.SI.Area AFlo=185.8 "Floor area";
+  constant Modelica.Units.SI.Area AFlo=220.84 "Floor area";
   parameter Modelica.Units.SI.HeatFlowRate QHea_flow_nominal=8000
     "Nominal heat flow rate for heating";
   parameter Modelica.Units.SI.MassFlowRate mHea_flow_nominal=QHea_flow_nominal/
@@ -16,76 +14,31 @@ model RadiantHeatingCooling_TRoom_SF
     "Nominal heat flow rate for cooling";
   parameter Modelica.Units.SI.MassFlowRate mCoo_flow_nominal=-QCoo_flow_nominal
       /4200/5 "Design water mass flow rate for heating";
-  parameter Buildings.HeatTransfer.Data.OpaqueConstructions.Generic layFloSoi(nLay=4, material={
-        Buildings.HeatTransfer.Data.Solids.Concrete(x=0.08),Buildings.HeatTransfer.Data.Solids.InsulationBoard(x=
-        0.20),Buildings.HeatTransfer.Data.Solids.Concrete(x=0.2),Buildings.HeatTransfer.Data.Solids.Generic(
-        x=2,
-        k=1.3,
-        c=800,
-        d=1500)})
-    "Material layers from surface a to b (8cm concrete, 20 cm insulation, 20 cm concrete, 200 cm soil, below which is the undisturbed soil assumed)"
-    annotation (Placement(transformation(extent={{-20,-160},{0,-140}})));
   parameter Buildings.HeatTransfer.Data.OpaqueConstructions.Generic layCei(nLay=4, material={
-        Buildings.HeatTransfer.Data.Solids.Concrete(x=0.08),Buildings.HeatTransfer.Data.Solids.InsulationBoard(x=
-        0.10),Buildings.HeatTransfer.Data.Solids.Concrete(x=0.18),Buildings.HeatTransfer.Data.Solids.Concrete(x=
-        0.02)}) "Material layers from surface a to b (8cm concrete, 10 cm insulation, 18+2 cm concrete)"
-    annotation (Placement(transformation(extent={{-18,110},{2,130}})));
+        Buildings.HeatTransfer.Data.Solids.Concrete(x=0.02),Buildings.HeatTransfer.Data.Solids.Concrete(x=0.18),
+        Buildings.HeatTransfer.Data.Solids.InsulationBoard(x=0.10),Buildings.HeatTransfer.Data.Solids.Concrete(x=0.08)})
+    "Material layers from surface a to b (8cm concrete, 10 cm insulation, 18+2 cm concrete)"
+    annotation (Placement(transformation(extent={{20,140},{40,160}})));
   // Floor slab
-  Buildings.Fluid.HeatExchangers.RadiantSlabs.ParallelCircuitsSlab slaFlo(
-    redeclare package Medium = MediumW,
-    allowFlowReversal=false,
-    layers=layFloSoi,
-    iLayPip=1,
-    pipe=Buildings.Fluid.Data.Pipes.PEX_DN_15(),
-    sysTyp=Buildings.Fluid.HeatExchangers.RadiantSlabs.Types.SystemType.Floor,
-    disPip=0.30,
-    nCir=3,
-    A=AFlo,
-    m_flow_nominal=mHea_flow_nominal,
-    energyDynamics=Modelica.Fluid.Types.Dynamics.FixedInitial,
-    from_dp=true,
-    show_T=true) "Slab for floor with embedded pipes, connected to soil"
-    annotation (Placement(transformation(extent={{0,-190},{20,-170}})));
-  Buildings.Fluid.Sources.Boundary_ph pre(
-    redeclare package Medium = MediumW,
-    p(displayUnit="Pa") = 300000,
-    nPorts=1) "Pressure boundary condition" annotation (Placement(transformation(extent={{70,-190},{50,-170}})));
-  Buildings.Controls.OBC.CDL.Reals.Sources.Constant TSetRooHea(k(
-      final unit="K",
-      displayUnit="degC") = 293.15, y(final unit="K", displayUnit="degC")) "Room temperture set point for heating"
-    annotation (Placement(transformation(extent={{-180,-154},{-160,-134}})));
-  Buildings.Fluid.Movers.SpeedControlled_y pum(
-    redeclare package Medium = MediumW,
-    energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
-    per(
-      pressure(V_flow=2*{0,mHea_flow_nominal}/1000, dp=2*{14000,0}),
-      speed_nominal,
-      constantSpeed,
-      speeds),
-    inputType=Buildings.Fluid.Types.InputType.Continuous) "Pump"
-    annotation (Placement(transformation(extent={{-80,-190},{-60,-170}})));
-  Buildings.Fluid.HeatExchangers.Heater_T hea(
-    redeclare final package Medium = MediumW,
-    allowFlowReversal=false,
-    m_flow_nominal=mHea_flow_nominal,
-    dp_nominal=10000,
-    show_T=true,
-    energyDynamics=Modelica.Fluid.Types.Dynamics.FixedInitial) "Ideal heater"
-    annotation (Placement(transformation(extent={{-40,-190},{-20,-170}})));
   // Ceiling slab
-  Buildings.Fluid.HeatExchangers.RadiantSlabs.ParallelCircuitsSlab slaCei(
+  ParallelCircuitsSlab_PCM_fixed_Rx                                slaCei(
     redeclare package Medium = MediumW,
     allowFlowReversal=false,
-    layers=layCei,
-    iLayPip=3,
+    layers=layCeiPCM,
+    iLayPip=1,
     pipe=Buildings.Fluid.Data.Pipes.PEX_DN_15(),
     sysTyp=Buildings.Fluid.HeatExchangers.RadiantSlabs.Types.SystemType.Ceiling_Wall_or_Capillary,
     disPip=0.2,
+    T_a_start=T_cons_start,
+    T_b_start=T_cons_start,
     nCir=4,
     A=AFlo,
     m_flow_nominal=mCoo_flow_nominal,
     energyDynamics=Modelica.Fluid.Types.Dynamics.FixedInitial,
-    show_T=true) "Slab for ceiling with embedded pipes"
+    show_T=true,
+    PCM_thickness=0.1,
+    T_c_start=T_cons_start)
+                 "Slab for ceiling with embedded pipes"
     annotation (Placement(transformation(extent={{2,80},{22,100}})));
   Buildings.Fluid.Sources.Boundary_ph prePre(
     redeclare package Medium = MediumW,
@@ -104,21 +57,19 @@ model RadiantHeatingCooling_TRoom_SF
     annotation (Placement(transformation(extent={{-180,106},{-160,126}})));
   Buildings.Controls.OBC.CDL.Conversions.BooleanToReal booToRea(realTrue=mCoo_flow_nominal)
     "Cooling water mass flow rate" annotation (Placement(transformation(extent={{-80,88},{-60,108}})));
-  Buildings.ThermalZones.EnergyPlus_9_6_0.OpaqueConstruction attFlo(
-    surfaceName="Attic:LivingFloor")
+  Buildings.ThermalZones.EnergyPlus_9_6_0.OpaqueConstruction attFlo(surfaceName="ceiling_unit1")
     "Floor of the attic above the living room"
     annotation (Placement(transformation(extent={{-10,-10},{10,10}},rotation=270,origin={102,90})));
-  Buildings.ThermalZones.EnergyPlus_9_6_0.OpaqueConstruction livFlo(surfaceName="Living:Floor")
-    "Floor of the living room" annotation (Placement(transformation(
-        extent={{-10,-10},{10,10}},
-        rotation=270,
-        origin={100,-180})));
 
-  Buildings.Controls.OBC.RadiantSystems.Heating.HighMassSupplyTemperature_TRoom conHea(TSupSet_max=313.15)
-    "Controller for radiant heating system"
-    annotation (Placement(transformation(rotation=0, extent={{-140,-160},{-120,-140}})));
   Buildings.Controls.OBC.RadiantSystems.Cooling.HighMassSupplyTemperature_TRoomRelHum conCoo(TSupSet_min=289.15)
     "Controller for radiant cooling" annotation (Placement(transformation(extent={{-140,100},{-120,120}})));
+  parameter Buildings.HeatTransfer.Data.OpaqueConstructions.Generic layCeiPCM(nLay=3, material={
+        Buildings.HeatTransfer.Data.Solids.Concrete(x=0.02),Buildings.HeatTransfer.Data.Solids.InsulationBoard(x=
+        0.10),Buildings.HeatTransfer.Data.Solids.Concrete(x=0.08)})
+    "Material layers from surface a to b (8cm concrete, 10 cm insulation, 18+2 cm concrete)"
+    annotation (Placement(transformation(extent={{-20,140},{0,160}})));
+  parameter Modelica.Units.SI.Temperature T_cons_start=290.15
+    "Initial construction temperature in the layer that contains the pipes, used if steadyStateInitial = false";
 initial equation
   // The floor area can be obtained from EnergyPlus, but it is a structural parameter used to
   // size the system and therefore we hard-code it here.
@@ -138,30 +89,6 @@ equation
     annotation (Line(points={{102,100},{102,110},{16,110},{16,100}},color={191,0,0}));
   connect(slaCei.surf_b,attFlo.heaPorBac)
     annotation (Line(points={{16,80},{16,70},{102,70},{102,80.2}},    color={191,0,0}));
-  connect(TSetRooHea.y, conHea.TRooSet) annotation (Line(points={{-158,-144},{
-          -142,-144}},                         color={0,0,127}));
-  connect(pum.y, conHea.yPum) annotation (Line(points={{-70,-168},{-70,-156},{
-          -118,-156}},
-                  color={0,0,127}));
-  connect(pum.port_b,hea.port_a)
-    annotation (Line(points={{-60,-180},{-40,-180}},color={0,127,255}));
-  connect(hea.port_b,slaFlo.port_a)
-    annotation (Line(points={{-20,-180},{0,-180}},color={0,127,255}));
-  connect(livFlo.heaPorFro, slaFlo.surf_a) annotation (Line(points={{100,-170},
-          {100,-160},{14,-160},{14,-170}},color={191,0,0}));
-  connect(slaFlo.surf_b, livFlo.heaPorBac) annotation (Line(points={{14,-190},{
-          14,-200},{100,-200},{100,-189.8}},
-                                          color={191,0,0}));
-  connect(zon.TAir, conHea.TRoo) annotation (Line(points={{41,18},{48,18},{48,-100},
-          {-148,-100},{-148,-150},{-142,-150}},   color={0,0,127}));
-  connect(slaFlo.port_b,pum.port_a)
-    annotation (Line(points={{20,-180},{40,-180},{40,-220},{-100,-220},{-100,
-          -180},{-80,-180}},                                                                   color={0,127,255}));
-  connect(slaFlo.port_b,pre.ports[1])
-    annotation (Line(points={{20,-180},{50,-180}},color={0,127,255}));
-  connect(conHea.TSupSet, hea.TSet) annotation (Line(points={{-118,-144},{-50,
-          -144},{-50,-172},{-42,-172}},
-                                  color={0,0,127}));
   connect(conCoo.on, booToRea.u) annotation (Line(points={{-118,108},{-90,108},
           {-90,98},{-82,98}}, color={255,0,255}));
   connect(conCoo.TRooSet, TSetRooCoo.y)
@@ -176,9 +103,10 @@ equation
     __Dymola_Commands(
       file="modelica://Buildings/Resources/Scripts/Dymola/ThermalZones/EnergyPlus_9_6_0/Examples/SingleFamilyHouse/RadiantHeatingCooling_TRoom.mos" "Simulate and plot"),
     experiment(
-      StartTime=7776000,
-      StopTime=9504000,
-      Tolerance=1e-06),
+      StartTime=17366400,
+      StopTime=17625600,
+      Tolerance=1e-06,
+      __Dymola_Algorithm="Radau"),
     Documentation(
       info="<html>
 <p>

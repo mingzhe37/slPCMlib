@@ -106,6 +106,7 @@ model ParallelCircuitsSlab_PCM_fixed_Rx "Model of multiple parallel circuits of 
     final allowFlowReversal=allowFlowReversal,
     final m_flow_nominal=m_flow_nominal/nCir,
     final m_flow_small=m_flow_small/nCir,
+    T_c_start=T_c_start,
     PCM_thickness=PCM_thickness,
     final homotopyInitialization=homotopyInitialization,
     final from_dp=from_dp,
@@ -120,6 +121,8 @@ model ParallelCircuitsSlab_PCM_fixed_Rx "Model of multiple parallel circuits of 
     "Single parallel circuit of the radiant slab"
     annotation (Placement(transformation(extent={{-10,-10},{10,10}})));
   parameter Modelica.Units.SI.Length PCM_thickness=0.03 "Thickness of layer";
+  parameter Modelica.Units.SI.Temperature T_c_start=sla.T_c_start
+    "Initial construction temperature in the layer that contains the pipes, used if steadyStateInitial = false";
 protected
   parameter Medium.ThermodynamicState state_default = Medium.setState_pTX(
       T=Medium.T_default,
