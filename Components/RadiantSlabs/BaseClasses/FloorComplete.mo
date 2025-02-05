@@ -1,6 +1,6 @@
 within slPCMlib.Components.RadiantSlabs.BaseClasses;
 model FloorComplete "Model of a floor of the building"
-  extends Buildings.Examples.VAVReheat.BaseClasses.PartialFloor(
+  extends slPCMlib.Components.RadiantSlabs.BaseClasses.PartialFloor(
     redeclare package Medium = MediumA,
     VRooCor=456.455,
     VRooSou=346.022,
@@ -111,8 +111,6 @@ model FloorComplete "Model of a floor of the building"
       VRooEas,VRooNor,VRooWes}*1.2
     "Outside air infiltration for each exterior room";
 
-  Modelica.Blocks.Interfaces.RealOutput TRooPhi[5](each unit="1") "Room air temperatures" annotation (Placement(
-        transformation(extent={{380,120},{400,140}}), iconTransformation(extent={{380,0},{400,20}})));
   Modelica.Blocks.Routing.Multiplex5 multiplex5_2
     annotation (Placement(transformation(extent={{340,158},{360,178}})));
   Buildings.BoundaryConditions.WeatherData.ReaderTMY3 weaDat(filNam=weaName, computeWetBulbTemperature=false)
@@ -301,8 +299,6 @@ equation
     annotation (Line(points={{53,88},{60,88},{60,163},{338,163}}, color={0,0,127}));
   connect(cor.phi, multiplex5_2.u5[1])
     annotation (Line(points={{185,90},{210,90},{210,158},{338,158}}, color={0,0,127}));
-  connect(multiplex5_2.y, TRooPhi)
-    annotation (Line(points={{361,168},{368,168},{368,130},{390,130}}, color={0,0,127}));
   connect(out1.ports[1], res.port_a) annotation (Line(points={{-128,46},{-114,46}}, color={0,127,255}));
   connect(bou[:].ports[1],res1[:].port_a)
     annotation (Line(points={{-128,80},{-116,80}},               color={0,127,255}));
