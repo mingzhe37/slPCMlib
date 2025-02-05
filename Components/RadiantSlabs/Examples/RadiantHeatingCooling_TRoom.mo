@@ -18,7 +18,7 @@ model RadiantHeatingCooling_TRoom
         "modelica://Buildings/Resources/weatherdata/ASHRAE901_OfficeSmall_STD2004_Atlanta_IdealLoadSystem_updated_v96.idf")
     "Name of the weather file";
 
-  constant Modelica.Units.SI.Area AFlo=185.8 "Floor area";
+//   constant Modelica.Units.SI.Area AFlo=185.8 "Floor area";
   parameter Modelica.Units.SI.HeatFlowRate QHea_flow_nominal=8000
     "Nominal heat flow rate for heating";
   parameter Modelica.Units.SI.MassFlowRate mHea_flow_nominal=QHea_flow_nominal/
@@ -32,20 +32,23 @@ model RadiantHeatingCooling_TRoom
     annotation (Placement(transformation(extent={{680,340},{700,360}})));
   // Floor slab
   // Ceiling slab
-  ParallelCircuitsSlab_PCM                                         slaCeiSou(
+  ParallelCircuitsSlab_PCM_fixed_Rx                                slaCeiSou(
     redeclare package Medium = MediumW,
     allowFlowReversal=false,
-    layers=layCeiSou,
+    layers=PERClayCei,
     iLayPip=2,
     pipe=Buildings.Fluid.Data.Pipes.PEX_DN_15(),
     sysTyp=Buildings.Fluid.HeatExchangers.RadiantSlabs.Types.SystemType.Ceiling_Wall_or_Capillary,
     disPip=designPar.Radiant_loop_spacing,
+    T_a_start=T_cons_start,
+    T_b_start=T_cons_start,
     nCir=4,
     A=sou.AFlo,
     m_flow_nominal=designPar.mCoo_flow_nominal_Sou,
     energyDynamics=Modelica.Fluid.Types.Dynamics.FixedInitial,
     show_T=true,
-    PCM_thickness=designPar.PCM_thickness)
+    PCM_thickness=designPar.PCM_thickness,
+    T_c_start=T_cons_start)
                  "Slab for ceiling with embedded pipes"
     annotation (Placement(transformation(extent={{622,212},{642,232}})));
   Buildings.Fluid.Sources.Boundary_ph prePre(
@@ -79,20 +82,23 @@ model RadiantHeatingCooling_TRoom
       //AFlo-zon.AFlo) < 0.1,
     //"Floor area AFlo differs from EnergyPlus floor area.");
 
-  ParallelCircuitsSlab_PCM                                         slaCeiNor(
+  ParallelCircuitsSlab_PCM_fixed_Rx                                slaCeiNor(
     redeclare package Medium = MediumW,
     allowFlowReversal=false,
-    layers=layCeiSou,
+    layers=PERClayCei,
     iLayPip=2,
     pipe=Buildings.Fluid.Data.Pipes.PEX_DN_15(),
     sysTyp=Buildings.Fluid.HeatExchangers.RadiantSlabs.Types.SystemType.Ceiling_Wall_or_Capillary,
     disPip=designPar.Radiant_loop_spacing,
+    T_a_start=T_cons_start,
+    T_b_start=T_cons_start,
     nCir=4,
     A=nor.AFlo,
     m_flow_nominal=designPar.mCoo_flow_nominal_Nor,
     energyDynamics=Modelica.Fluid.Types.Dynamics.FixedInitial,
     show_T=true,
-    PCM_thickness=designPar.PCM_thickness)
+    PCM_thickness=designPar.PCM_thickness,
+    T_c_start=T_cons_start)
                  "Slab for ceiling with embedded pipes"
     annotation (Placement(transformation(extent={{622,94},{642,114}})));
   Buildings.Fluid.Sources.Boundary_ph prePre1(
@@ -115,20 +121,23 @@ model RadiantHeatingCooling_TRoom
         origin={722,104})));
   Buildings.Controls.OBC.RadiantSystems.Cooling.HighMassSupplyTemperature_TRoomRelHum conCoo_nor(TSupSet_min=289.15)
     "Controller for radiant cooling" annotation (Placement(transformation(extent={{480,114},{500,134}})));
-  ParallelCircuitsSlab_PCM                                         slaCeiEas(
+  ParallelCircuitsSlab_PCM_fixed_Rx                                slaCeiEas(
     redeclare package Medium = MediumW,
     allowFlowReversal=false,
-    layers=layCeiSou,
+    layers=PERClayCei,
     iLayPip=2,
     pipe=Buildings.Fluid.Data.Pipes.PEX_DN_15(),
     sysTyp=Buildings.Fluid.HeatExchangers.RadiantSlabs.Types.SystemType.Ceiling_Wall_or_Capillary,
     disPip=designPar.Radiant_loop_spacing,
+    T_a_start=T_cons_start,
+    T_b_start=T_cons_start,
     nCir=4,
     A=eas.AFlo,
     m_flow_nominal=designPar.mCoo_flow_nominal_Eas,
     energyDynamics=Modelica.Fluid.Types.Dynamics.FixedInitial,
     show_T=true,
-    PCM_thickness=designPar.PCM_thickness)
+    PCM_thickness=designPar.PCM_thickness,
+    T_c_start=T_cons_start)
                  "Slab for ceiling with embedded pipes"
     annotation (Placement(transformation(extent={{622,154},{642,174}})));
   Buildings.Fluid.Sources.Boundary_ph prePre2(
@@ -151,20 +160,23 @@ model RadiantHeatingCooling_TRoom
         origin={722,164})));
   Buildings.Controls.OBC.RadiantSystems.Cooling.HighMassSupplyTemperature_TRoomRelHum conCoo_eas(TSupSet_min=289.15)
     "Controller for radiant cooling" annotation (Placement(transformation(extent={{480,174},{500,194}})));
-  ParallelCircuitsSlab_PCM                                         slaCeiWes(
+  ParallelCircuitsSlab_PCM_fixed_Rx                                slaCeiWes(
     redeclare package Medium = MediumW,
     allowFlowReversal=false,
-    layers=layCeiSou,
+    layers=PERClayCei,
     iLayPip=2,
     pipe=Buildings.Fluid.Data.Pipes.PEX_DN_15(),
     sysTyp=Buildings.Fluid.HeatExchangers.RadiantSlabs.Types.SystemType.Ceiling_Wall_or_Capillary,
     disPip=designPar.Radiant_loop_spacing,
+    T_a_start=T_cons_start,
+    T_b_start=T_cons_start,
     nCir=4,
     A=wes.AFlo,
     m_flow_nominal=designPar.mCoo_flow_nominal_Wes,
     energyDynamics=Modelica.Fluid.Types.Dynamics.FixedInitial,
     show_T=true,
-    PCM_thickness=designPar.PCM_thickness)
+    PCM_thickness=designPar.PCM_thickness,
+    T_c_start=T_cons_start)
                  "Slab for ceiling with embedded pipes"
     annotation (Placement(transformation(extent={{622,34},{642,54}})));
   Buildings.Fluid.Sources.Boundary_ph prePre3(
@@ -187,20 +199,23 @@ model RadiantHeatingCooling_TRoom
         origin={722,44})));
   Buildings.Controls.OBC.RadiantSystems.Cooling.HighMassSupplyTemperature_TRoomRelHum conCoo_wes(TSupSet_min=289.15)
     "Controller for radiant cooling" annotation (Placement(transformation(extent={{480,54},{500,74}})));
-  ParallelCircuitsSlab_PCM                                         slaCeiCor(
+  ParallelCircuitsSlab_PCM_fixed_Rx                                slaCeiCor(
     redeclare package Medium = MediumW,
     allowFlowReversal=false,
-    layers=layCeiCor,
-    iLayPip=2,
+    layers=PERClayCei_Cor,
+    iLayPip=1,
     pipe=Buildings.Fluid.Data.Pipes.PEX_DN_15(),
     sysTyp=Buildings.Fluid.HeatExchangers.RadiantSlabs.Types.SystemType.Ceiling_Wall_or_Capillary,
     disPip=designPar.Radiant_loop_spacing,
+    T_a_start=T_cons_start,
+    T_b_start=T_cons_start,
     nCir=4,
     A=cor.AFlo,
     m_flow_nominal=designPar.mCoo_flow_nominal_Cor,
     energyDynamics=Modelica.Fluid.Types.Dynamics.FixedInitial,
     show_T=true,
-    PCM_thickness=designPar.PCM_thickness)
+    PCM_thickness=designPar.PCM_thickness,
+    T_c_start=T_cons_start)
                  "Slab for ceiling with embedded pipes"
     annotation (Placement(transformation(extent={{622,-26},{642,-6}})));
   Buildings.Fluid.Sources.Boundary_ph prePre4(
@@ -234,7 +249,7 @@ model RadiantHeatingCooling_TRoom
     QCoo_flow_nominal_Wes=-4500,
     QCoo_flow_nominal_Cor=-5000,
     Radiant_loop_spacing=0.15,
-    PCM_thickness=0.02)          annotation (Placement(transformation(extent={{520,340},{540,360}})));
+    PCM_thickness=0.05)          annotation (Placement(transformation(extent={{520,340},{540,360}})));
   parameter Buildings.HeatTransfer.Data.Solids.GypsumBoard gypSum(x=0.016)
     annotation (Placement(transformation(extent={{640,340},{660,360}})));
   parameter Buildings.HeatTransfer.Data.Solids.Generic layPCM(
@@ -250,11 +265,18 @@ model RadiantHeatingCooling_TRoom
   parameter Buildings.HeatTransfer.Data.OpaqueConstructions.Generic layCeiCor(nLay=3, material={gypSum,layPCM,
         effIns}) "Material layers from surface a to b (8cm concrete, 10 cm insulation, 18+2 cm concrete)"
     annotation (Placement(transformation(extent={{700,340},{720,360}})));
-  parameter Buildings.HeatTransfer.Data.OpaqueConstructions.Generic PERClayCei(nLay=4, material={
+  parameter Buildings.HeatTransfer.Data.OpaqueConstructions.Generic PERClayCei(nLay=3, material={
         Buildings.HeatTransfer.Data.Solids.Concrete(x=0.08),Buildings.HeatTransfer.Data.Solids.InsulationBoard(x=
-        0.10),Buildings.HeatTransfer.Data.Solids.Concrete(x=0.18),Buildings.HeatTransfer.Data.Solids.Concrete(x=
-        0.02)}) "Material layers from surface a to b (8cm concrete, 10 cm insulation, 18+2 cm concrete)"
-    annotation (Placement(transformation(extent={{480,340},{500,360}})));
+        0.10),Buildings.HeatTransfer.Data.Solids.Concrete(x=0.02)})
+    "Material layers from surface a to b (8cm concrete, 10 cm insulation, 18+2 cm concrete)"
+    annotation (Placement(transformation(extent={{460,340},{480,360}})));
+  parameter Buildings.HeatTransfer.Data.OpaqueConstructions.Generic PERClayCei_Cor(nLay=3, material={
+        Buildings.HeatTransfer.Data.Solids.Concrete(x=0.02),Buildings.HeatTransfer.Data.Solids.InsulationBoard(x=
+        0.10),Buildings.HeatTransfer.Data.Solids.Concrete(x=0.08)})
+                "Material layers from surface a to b (8cm concrete, 10 cm insulation, 18+2 cm concrete)"
+    annotation (Placement(transformation(extent={{420,340},{440,360}})));
+  parameter Modelica.Units.SI.Temperature T_cons_start=290.15
+    "Initial construction temperature in the layer that contains the pipes, used if steadyStateInitial = false";
 equation
   connect(masFloSouCoo.ports[1], slaCeiSou.port_a) annotation (Line(points={{602,224},{612,224},{612,222},{622,222}},
                                                                                                 color={0,127,255}));
