@@ -1,5 +1,5 @@
 within slPCMlib.Components.RadiantSlabs.Examples;
-model RadiantHeatingCooling_TRoom
+model RadiantHeatingCooling_TRoom_Baseline
   "Example model with one thermal zone with a radiant floor where the cooling is controlled based on the room air temperature"
   extends slPCMlib.Components.RadiantSlabs.BaseClasses.FloorComplete(building(
       idfName=idfName,
@@ -490,4 +490,4 @@ First implementation.
     Icon(
       coordinateSystem(
         extent={{-160,-120},{820,480}})));
-end RadiantHeatingCooling_TRoom;
+end RadiantHeatingCooling_TRoom_Baseline;
