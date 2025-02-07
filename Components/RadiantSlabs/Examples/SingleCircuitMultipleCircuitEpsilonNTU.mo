@@ -176,7 +176,7 @@ equation
       color={0,127,255},
       smooth=Smooth.None));
   connect(senTem1.port_b, sin.ports[1]) annotation (Line(
-      points={{90,20},{100,20},{100,-17.3333},{112,-17.3333}},
+      points={{90,20},{100,20},{100,-21.3333},{112,-21.3333}},
       color={0,127,255},
       smooth=Smooth.None));
   connect(senTem2.port_b, sin.ports[2]) annotation (Line(
@@ -184,7 +184,7 @@ equation
       color={0,127,255},
       smooth=Smooth.None));
   connect(senTem3.port_b, sin.ports[3]) annotation (Line(
-      points={{90,-60},{100,-60},{100,-22.6667},{112,-22.6667}},
+      points={{90,-60},{100,-60},{100,-18.6667},{112,-18.6667}},
       color={0,127,255},
       smooth=Smooth.None));
   connect(conBel2.port_b, sla2.surf_b) annotation (Line(
@@ -196,7 +196,7 @@ equation
       color={0,0,127},
       smooth=Smooth.None));
   connect(sou.ports[1], sla1.port_a) annotation (Line(
-      points={{-50,-17.3333},{-38,-17.3333},{-38,20},{-14,20}},
+      points={{-50,-21.3333},{-38,-21.3333},{-38,20},{-14,20}},
       color={0,127,255},
       smooth=Smooth.None));
   connect(sou.ports[2], sla2.port_a) annotation (Line(
@@ -204,7 +204,7 @@ equation
       color={0,127,255},
       smooth=Smooth.None));
   connect(sou.ports[3], sla3.port_a) annotation (Line(
-      points={{-50,-22.6667},{-40,-22.6667},{-40,-60},{30,-60}},
+      points={{-50,-18.6667},{-40,-18.6667},{-40,-60},{30,-60}},
       color={0,127,255},
       smooth=Smooth.None));
 

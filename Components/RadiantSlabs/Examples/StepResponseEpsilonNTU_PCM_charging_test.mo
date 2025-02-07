@@ -1,6 +1,5 @@
 within slPCMlib.Components.RadiantSlabs.Examples;
-model StepResponseEpsilonNTU
-  "Model that tests the radiant slab with epsilon-NTU configuration"
+model StepResponseEpsilonNTU_PCM_charging_test "Model that tests the radiant slab with epsilon-NTU configuration"
   extends Modelica.Icons.Example;
  package Medium = Buildings.Media.Water;
   Buildings.Fluid.Sources.Boundary_ph sin(redeclare package Medium = Medium,
@@ -15,22 +14,9 @@ model StepResponseEpsilonNTU
   Modelica.Blocks.Sources.Pulse pulse(
     period=86400,
     startTime=0,
-    amplitude=-m_flow_nominal,
-    offset=m_flow_nominal)
+    amplitude=-designPar.mCoo_flow_nominal_Sou,
+    offset=designPar.mCoo_flow_nominal_Sou)
     annotation (Placement(transformation(extent={{-80,-22},{-60,-2}})));
-  slPCMlib.Components.RadiantSlabs.SingleCircuitSlab sla(
-    m_flow_nominal=m_flow_nominal,
-    redeclare package Medium = Medium,
-    layers=layers,
-    iLayPip=1,
-    pipe=pipe,
-    sysTyp=slPCMlib.Components.RadiantSlabs.Types.SystemType.Floor,
-    disPip=0.2,
-    A=A,
-    energyDynamics=Modelica.Fluid.Types.Dynamics.FixedInitial,
-    heatTransfer=slPCMlib.Components.RadiantSlabs.Types.HeatTransfer.FiniteDifference)
-    "Slabe with embedded pipes"
-    annotation (Placement(transformation(extent={{10,-30},{30,-10}})));
 
   parameter Modelica.Units.SI.MassFlowRate m_flow_nominal=0.167
     "Nominal mass flow rate";
@@ -63,36 +49,47 @@ model StepResponseEpsilonNTU
   Modelica.Thermal.HeatTransfer.Components.BodyRadiation hRadBel(Gr=A/(1/0.7 + 1
         /0.7 - 1)) "Radiative heat transfer below the slab"
     annotation (Placement(transformation(extent={{-20,-100},{0,-80}})));
-  parameter Buildings.HeatTransfer.Data.OpaqueConstructions.Generic layers(nLay=3,
-      material={Buildings.HeatTransfer.Data.Solids.Generic(
-        x=0.08,
-        k=1.13,
-        c=1000,
-        d=1400,
-        nSta=5),Buildings.HeatTransfer.Data.Solids.Generic(
-        x=0.05,
-        k=0.04,
-        c=1400,
-        d=10),Buildings.HeatTransfer.Data.Solids.Generic(
-        x=0.2,
-        k=1.8,
-        c=1100,
-        d=2400)})
-    "Material layers from surface a to b (8cm concrete, 5 cm insulation, 20 cm reinforced concrete)"
-    annotation (Placement(transformation(extent={{60,60},{80,80}})));
-  parameter Buildings.Fluid.Data.Pipes.PEX_RADTEST pipe "Pipe material"
-    annotation (Placement(transformation(extent={{60,20},{80,40}})));
   Buildings.Fluid.Sensors.TemperatureTwoPort TOut(redeclare package Medium =
         Medium, m_flow_nominal=m_flow_nominal) "Outlet temperature of the slab"
     annotation (Placement(transformation(extent={{40,-30},{60,-10}})));
+  ParallelCircuitsSlab_PCM_fixed_Rx                                slaCeiSou(
+    redeclare package Medium = MediumW,
+    allowFlowReversal=false,
+    layers=PERClayCei,
+    iLayPip=2,
+    pipe=Buildings.Fluid.Data.Pipes.PEX_DN_15(),
+    sysTyp=Buildings.Fluid.HeatExchangers.RadiantSlabs.Types.SystemType.Ceiling_Wall_or_Capillary,
+    disPip=designPar.Radiant_loop_spacing,
+    T_a_start=T_cons_start,
+    T_b_start=T_cons_start,
+    nCir=4,
+    A=sou.AFlo,
+    m_flow_nominal=designPar.mCoo_flow_nominal_Sou,
+    energyDynamics=Modelica.Fluid.Types.Dynamics.FixedInitial,
+    show_T=true,
+    PCM_thickness=designPar.PCM_thickness,
+    T_c_start=T_c_start)
+                 "Slab for ceiling with embedded pipes"
+    annotation (Placement(transformation(extent={{10,-30},{30,-10}})));
+  BaseClasses.DesignPar designPar(
+    QCoo_flow_nominal_Sou=-5000,
+    QCoo_flow_nominal_Eas=-4000,
+    QCoo_flow_nominal_Nor=-5000,
+    QCoo_flow_nominal_Wes=-4500,
+    QCoo_flow_nominal_Cor=-5000,
+    Radiant_loop_spacing=0.15,
+    PCM_thickness=0.05)          annotation (Placement(transformation(extent={{60,40},{80,60}})));
+  parameter Buildings.HeatTransfer.Data.OpaqueConstructions.Generic PERClayCei(nLay=3, material={
+        Buildings.HeatTransfer.Data.Solids.Concrete(x=0.08),Buildings.HeatTransfer.Data.Solids.InsulationBoard(x=
+        0.10),Buildings.HeatTransfer.Data.Solids.GypsumBoard(x=0.02)})
+    "Material layers from surface a to b (8cm concrete, 10 cm insulation, 18+2 cm concrete)"
+    annotation (Placement(transformation(extent={{60,80},{80,100}})));
+  parameter Modelica.Units.SI.Temperature T_c_start=T_cons_start
+    "Initial construction temperature in the layer that contains the pipes, used if steadyStateInitial = false";
 equation
   connect(pulse.y, sou.m_flow_in)       annotation (Line(
       points={{-59,-12},{-32,-12}},
       color={0,0,127},
-      smooth=Smooth.None));
-  connect(sou.ports[1], sla.port_a) annotation (Line(
-      points={{-10,-20},{10,-20}},
-      color={0,127,255},
       smooth=Smooth.None));
   connect(TAirAbo.port, conAbo.fluid) annotation (Line(
       points={{-40,70},{-20,70}},
@@ -110,31 +107,17 @@ equation
       points={{-40,-90},{-20,-90}},
       color={191,0,0},
       smooth=Smooth.None));
-  connect(conAbo.solid, sla.surf_a) annotation (Line(
-      points={{5.55112e-16,70},{24,70},{24,-10}},
-      color={191,0,0},
-      smooth=Smooth.None));
-  connect(hRadAbo.port_b, sla.surf_a) annotation (Line(
-      points={{5.55112e-16,30},{24,30},{24,-10}},
-      color={191,0,0},
-      smooth=Smooth.None));
-  connect(conBel.solid, sla.surf_b) annotation (Line(
-      points={{5.55112e-16,-50},{24,-50},{24,-30}},
-      color={191,0,0},
-      smooth=Smooth.None));
-  connect(hRadBel.port_b, sla.surf_b) annotation (Line(
-      points={{5.55112e-16,-90},{24,-90},{24,-30}},
-      color={191,0,0},
-      smooth=Smooth.None));
-  connect(sla.port_b, TOut.port_a) annotation (Line(
-      points={{30,-20},{40,-20}},
-      color={0,127,255},
-      smooth=Smooth.None));
   connect(TOut.port_b, sin.ports[1]) annotation (Line(
       points={{60,-20},{70,-20}},
       color={0,127,255},
       smooth=Smooth.None));
 
+  connect(TOut.port_a, slaCeiSou.port_b) annotation (Line(points={{40,-20},{30,-20}}, color={0,127,255}));
+  connect(sou.ports[1], slaCeiSou.port_a) annotation (Line(points={{-10,-20},{10,-20}}, color={0,127,255}));
+  connect(slaCeiSou.surf_a, hRadAbo.port_b) annotation (Line(points={{24,-10},{24,30},{0,30}}, color={191,0,0}));
+  connect(slaCeiSou.surf_a, conAbo.solid) annotation (Line(points={{24,-10},{24,70},{0,70}}, color={191,0,0}));
+  connect(slaCeiSou.surf_b, conBel.solid) annotation (Line(points={{24,-30},{24,-50},{0,-50}}, color={191,0,0}));
+  connect(slaCeiSou.surf_b, hRadBel.port_b) annotation (Line(points={{24,-30},{24,-90},{0,-90}}, color={191,0,0}));
  annotation(__Dymola_Commands(file="modelica://Buildings/Resources/Scripts/Dymola/Fluid/HeatExchangers/RadiantSlabs/Examples/StepResponseEpsilonNTU.mos"
         "Simulate and plot"),
           Diagram(coordinateSystem(preserveAspectRatio=false,extent={{-100,-120},
@@ -166,4 +149,4 @@ First implementation.
     experiment(
       StopTime=86400,
       Tolerance=1e-6));
-end StepResponseEpsilonNTU;
+end StepResponseEpsilonNTU_PCM_charging_test;
