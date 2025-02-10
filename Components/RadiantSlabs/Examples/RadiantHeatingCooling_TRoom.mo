@@ -277,6 +277,10 @@ model RadiantHeatingCooling_TRoom
     annotation (Placement(transformation(extent={{420,340},{440,360}})));
   parameter Modelica.Units.SI.Temperature T_cons_start=290.15
     "Initial construction temperature in the layer that contains the pipes, used if steadyStateInitial = false";
+protected
+  Buildings.Controls.OBC.CDL.Reals.Sources.Constant phi_Zon[5](k=0.5)
+    "Internal heat gain (computed already in EnergyPlus)"
+    annotation (Placement(transformation(extent={{366,180},{386,200}})));
 equation
   connect(masFloSouCoo.ports[1], slaCeiSou.port_a) annotation (Line(points={{602,224},{612,224},{612,222},{622,222}},
                                                                                                 color={0,127,255}));
@@ -384,8 +388,7 @@ equation
     annotation (Line(points={{636,-26},{636,-36},{722,-36},{722,-25.8}},     color={191,0,0}));
   connect(multiplex5_1.y, demux_TRoo.u)
     annotation (Line(points={{361,290},{380,290},{380,220},{398,220}}, color={0,0,127}));
-  connect(multiplex5_2.y, demux_PhiRoo.u)
-    annotation (Line(points={{361,168},{380,168},{380,190},{398,190}}, color={0,0,127}));
+  connect(phi_Zon.y, demux_PhiRoo.u) annotation (Line(points={{388,190},{398,190}}, color={0,0,127}));
   annotation (
     __Dymola_Commands(
       file="modelica://Buildings/Resources/Scripts/Dymola/ThermalZones/EnergyPlus_9_6_0/Examples/SingleFamilyHouse/RadiantHeatingCooling_TRoom.mos" "Simulate and plot"),

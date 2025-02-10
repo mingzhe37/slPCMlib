@@ -262,6 +262,10 @@ model RadiantHeatingCooling_TRoom_Baseline
         Buildings.HeatTransfer.Data.Solids.InsulationBoard(x=0.10),Buildings.HeatTransfer.Data.Solids.Concrete(x=
         0.08)}) "Material layers from surface a to b (8cm concrete, 10 cm insulation, 18+2 cm concrete)"
     annotation (Placement(transformation(extent={{400,340},{420,360}})));
+protected
+  Buildings.Controls.OBC.CDL.Reals.Sources.Constant phi_Zon[5](k=0.5)
+    "Internal heat gain (computed already in EnergyPlus)"
+    annotation (Placement(transformation(extent={{368,180},{388,200}})));
 equation
   connect(masFloSouCoo.ports[1], slaCeiSou.port_a) annotation (Line(points={{602,224},{612,224},{612,222},{622,222}},
                                                                                                 color={0,127,255}));
@@ -369,8 +373,7 @@ equation
     annotation (Line(points={{636,-26},{636,-36},{722,-36},{722,-25.8}},     color={191,0,0}));
   connect(multiplex5_1.y, demux_TRoo.u)
     annotation (Line(points={{361,290},{380,290},{380,220},{398,220}}, color={0,0,127}));
-  connect(multiplex5_2.y, demux_PhiRoo.u)
-    annotation (Line(points={{361,168},{380,168},{380,190},{398,190}}, color={0,0,127}));
+  connect(phi_Zon.y, demux_PhiRoo.u) annotation (Line(points={{390,190},{398,190}}, color={0,0,127}));
   annotation (
     __Dymola_Commands(
       file="modelica://Buildings/Resources/Scripts/Dymola/ThermalZones/EnergyPlus_9_6_0/Examples/SingleFamilyHouse/RadiantHeatingCooling_TRoom.mos" "Simulate and plot"),
