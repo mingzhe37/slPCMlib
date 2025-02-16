@@ -1,5 +1,5 @@
 within slPCMlib.Components.RadiantSlabs.BaseClasses;
-model ShiftingController
+model Controller_y
   parameter Real mRadWatSup(
       final unit="kg/s") "Output signal for true Boolean input";
   parameter Real TSupSet_max(
@@ -19,7 +19,8 @@ model ShiftingController
     and 0 for False or 1 for True in all other columns";
   Buildings.Controls.OBC.CDL.Reals.Sources.Constant TSetRooCoo(k(
       final unit="K",
-      displayUnit="degC") = 297.15, y(final unit="K", displayUnit="degC")) "Room temperture set point for heating"
+      displayUnit="degC") = TSetZone,
+                                    y(final unit="K", displayUnit="degC")) "Room temperture set point for heating"
     annotation (Placement(transformation(extent={{-100,80},{-80,100}})));
   Buildings.Controls.OBC.RadiantSystems.Cooling.HighMassSupplyTemperature_TRoomRelHum conCoo(
     TSupSet_max=TSupSet_max,
@@ -42,13 +43,16 @@ model ShiftingController
     annotation (Placement(transformation(extent={{-40,-28},{-20,-8}})));
   Buildings.Controls.OBC.CDL.Reals.Sources.Constant mWat_Charging(final k(final unit="kg/s") = mCharging)
                                                                                     "Output 0 to switch heater off"
-    annotation (Placement(transformation(extent={{-100,-100},{-80,-80}})));
+    annotation (Placement(transformation(extent={{-60,-100},{-40,-80}})));
   Buildings.Controls.OBC.CDL.Reals.Switch swiPum "Switch for circulation pumps"
     annotation (Placement(transformation(extent={{60,-60},{80,-40}})));
   Buildings.Controls.OBC.CDL.Logical.And onHeaPum "On/off signal for heat pump"
     annotation (Placement(transformation(extent={{8,20},{28,40}})));
-  Modelica.Blocks.Interfaces.RealInput temZon annotation (Placement(transformation(extent={{-140,50},{-100,90}})));
-  Modelica.Blocks.Interfaces.RealInput phiZon annotation (Placement(transformation(extent={{-140,10},{-100,50}})));
+  Modelica.Blocks.Interfaces.RealInput temZon annotation (Placement(transformation(extent={{-140,40},
+            {-100,80}}), iconTransformation(extent={{-140,40},{-100,80}})));
+  Modelica.Blocks.Interfaces.RealInput phiZon annotation (Placement(transformation(extent={{-140,
+            -100},{-100,-60}}), iconTransformation(extent={{-140,-100},{-100,
+            -60}})));
   Buildings.Controls.OBC.CDL.Conversions.BooleanToReal booToReaSou(realTrue=mRadWatSup)
     "Cooling water mass flow rate" annotation (Placement(transformation(extent={{60,-20},{40,0}})));
   Modelica.Blocks.Interfaces.RealOutput yHeaPum annotation (Placement(transformation(extent={{100,40},{120,60}})));
@@ -64,15 +68,18 @@ model ShiftingController
                                     y(final unit="K", displayUnit="degC"))
     "Chilled water supply temperture set point for charging"
     annotation (Placement(transformation(extent={{-100,-68},{-80,-48}})));
+  parameter Real TSetZone(
+    final unit="K",
+    displayUnit="degC") = 297.15 "Constant output value";
 equation
   connect(onHeaPum.y,evaSup. trigger) annotation (Line(points={{30,30},{48,30},{48,72},{64,72},{64,78}},
                               color={255,0,255}));
   connect(phiZon, conCoo.phiRoo)
-    annotation (Line(points={{-120,30},{-64,30},{-64,76},{-42,76}},                     color={0,0,127}));
-  connect(temZon, evaSup.u_m) annotation (Line(points={{-120,70},{-70,70},{-70,46},{70,46},{70,78}},
-                                                                                   color={0,0,127}));
+    annotation (Line(points={{-120,-80},{-64,-80},{-64,76},{-42,76}},                   color={0,0,127}));
+  connect(temZon, evaSup.u_m) annotation (Line(points={{-120,60},{-70,60},{-70,
+          46},{70,46},{70,78}},                                                    color={0,0,127}));
   connect(mWat_Charging.y, swiPum.u3)
-    annotation (Line(points={{-78,-90},{50,-90},{50,-58},{58,-58}}, color={0,0,127}));
+    annotation (Line(points={{-38,-90},{50,-90},{50,-58},{58,-58}}, color={0,0,127}));
   connect(conCoo.on, onHeaPum.u1)
     annotation (Line(points={{-18,82},{-2,82},{-2,30},{6,30}},                       color={255,0,255}));
   connect(swiPum.y, mWatSup) annotation (Line(points={{82,-50},{110,-50}},                   color={0,0,127}));
@@ -83,7 +90,8 @@ equation
     annotation (Line(points={{-78,10},{-48,10},{-48,-18},{-42,-18}},
                                                                   color={255,0,255}));
   connect(evaSup.y, yHeaPum) annotation (Line(points={{82,90},{96,90},{96,50},{110,50}}, color={0,0,127}));
-  connect(temZon, conCoo.TRoo) annotation (Line(points={{-120,70},{-70,70},{-70,80},{-42,80}}, color={0,0,127}));
+  connect(temZon, conCoo.TRoo) annotation (Line(points={{-120,60},{-70,60},{-70,
+          80},{-42,80}},                                                                       color={0,0,127}));
   connect(loaSch.y[1], onHeaPum.u2) annotation (Line(points={{-78,10},{-2,10},{-2,22},{6,22}}, color={255,0,255}));
   connect(booToReaSou.y, swiPum.u1)
     annotation (Line(points={{38,-10},{32,-10},{32,-42},{58,-42}}, color={0,0,127}));
@@ -96,9 +104,71 @@ equation
   connect(TSetRooCoo.y, conCoo.TRooSet) annotation (Line(points={{-78,90},{-42,90}}, color={0,0,127}));
   connect(conCoo.TSupSet, swiHeaPum.u1)
     annotation (Line(points={{-18,90},{-16,90},{-16,30},{-60,30},{-60,-10},{-42,-10}}, color={0,0,127}));
-  annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(coordinateSystem(preserveAspectRatio=false)),
+  annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
+        Rectangle(
+          extent={{-100,-100},{100,100}},
+          lineColor={0,0,127},
+          fillColor={255,255,255},
+          fillPattern=FillPattern.Solid),
+        Text(
+          extent={{76,-44},{96,-90}},
+          textColor={0,0,127},
+          textString="mPum"),
+        Text(
+          extent={{-92,92},{-48,44}},
+          textColor={0,0,127},
+          textString="TRoo"),
+        Rectangle(
+          extent={{-30,-16},{48,-40}},
+          lineColor={95,95,95},
+          lineThickness=1,
+          fillColor={95,95,95},
+          fillPattern=FillPattern.Solid),
+        Line(
+          points={{56,-82},{56,-26},{-24,-26},{-24,-20},{56,-20}},
+          color={28,108,200},
+          thickness=1),
+        Rectangle(
+          extent={{-30,-16},{48,48}},
+          lineColor={28,108,200},
+          fillColor={85,170,255},
+          fillPattern=FillPattern.Solid,
+          pattern=LinePattern.None),
+        Line(points={{-100,60},{-64,60},{-64,26},{-30,26}}, color={28,108,200}),
+        Line(points={{100,50},{74,50},{74,-36},{58,-36}}, color={28,108,200}),
+        Ellipse(
+          extent={{46,-50},{68,-72}},
+          lineColor={0,0,0},
+          fillColor={255,255,255},
+          fillPattern=FillPattern.Solid),
+        Polygon(
+          points={{56,-50},{46,-60},{68,-60},{56,-50}},
+          lineColor={28,108,200},
+          pattern=LinePattern.None,
+          fillColor={0,0,0},
+          fillPattern=FillPattern.Solid),
+        Line(points={{100,-60},{84,-60},{68,-60}}, color={28,108,200}),
+        Ellipse(
+          extent={{56,-32},{64,-40}},
+          lineColor={0,0,0},
+          fillColor={255,255,255},
+          fillPattern=FillPattern.Solid),
+        Text(
+          extent={{56,90},{96,30}},
+          textColor={0,0,127},
+          textString="yHeaPum"),
+        Line(points={{-30,-8},{-66,-8},{-66,-80},{-100,-80}},
+             color={28,108,200}),
+        Text(
+          extent={{-96,-44},{-76,-90}},
+          textColor={0,0,127},
+          textString="phi"),
+        Text(
+          textColor={0,0,255},
+          extent={{-150,110},{150,150}},
+          textString="%name")}),                                 Diagram(coordinateSystem(preserveAspectRatio=false)),
     experiment(
       StopTime=86400,
       Tolerance=1e-07,
       __Dymola_Algorithm="Cvode"));
-end ShiftingController;
+end Controller_y;

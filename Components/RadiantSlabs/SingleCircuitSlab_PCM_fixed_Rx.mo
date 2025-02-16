@@ -148,7 +148,7 @@ public
   SingleLayerSlPCMlib PCM_layer[nSeg](
     each A=A/nSeg,
     each thickness=PCM_thickness,
-    redeclare package PCM = slPCMlib.Media_Axiotherm_ATP.Axiotherm_ATP_18,
+    redeclare package PCM = slPCMlib.Media_Croda_Crodatherm.Croda_Crodatherm_19,
     each T_a_start=T_c_start,
     each T_b_start=T_c_start)
     annotation (Placement(transformation(extent={{0,20},{-20,40}})));

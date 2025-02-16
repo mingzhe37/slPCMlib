@@ -143,12 +143,30 @@ protected
     weaName=weaName,
     computeWetBulbTemperature=false)
     "Building-level declarations"
-    annotation (Placement(transformation(extent={{140,460},{160,480}})));
+    annotation (Placement(transformation(extent={{-160,480},{-140,500}})));
   Buildings.Controls.OBC.CDL.Reals.Sources.Constant qGai_flow[3](
     k={0,0,0})
     "Internal heat gain (computed already in EnergyPlus)"
     annotation (Placement(transformation(extent={{-140,-40},{-120,-20}})));
 
+public
+  Modelica.Blocks.Math.Add TOpe[5](
+    k1=0.5,
+    k2=0.5,
+    u1(final unit="K", displayUnit="degC"),
+    u2(final unit="K", displayUnit="degC"),
+    y(final unit="K", displayUnit="degC")) "Operative temperature"
+    annotation (Placement(transformation(extent={{340,420},{360,440}})));
+  Modelica.Blocks.Continuous.FirstOrder firOrdTRad[5](
+    T(displayUnit="min") = 600,
+    initType=Modelica.Blocks.Types.Init.SteadyState,
+    y_start(
+      unit="K",
+      displayUnit="degC") = 293.15,
+    u(final unit="K", displayUnit="degC"),
+    y(final unit="K", displayUnit="degC"))
+    "First order filter to avoid step change in radiative temperature after EnergyPlus sampling"
+    annotation (Placement(transformation(extent={{300,408},{320,428}})));
 initial equation
   assert(
     abs(
@@ -221,9 +239,11 @@ equation
   connect(wes.ports[2],portsWes[2])
     annotation (Line(points={{31.2,58.9},{-2,58.9},{-2,44},{-25,44}},color={0,127,255},smooth=Smooth.None));
   connect(cor.ports[1],portsCor[1])
-    annotation (Line(points={{162.182,60.9},{164,60.9},{164,26},{90,26},{90,46},{85,46}},color={0,127,255},smooth=Smooth.None));
+    annotation (Line(points={{162.182,60.9},{164,60.9},{164,26},{90,26},{90,46},
+          {85,46}},                                                                      color={0,127,255},smooth=Smooth.None));
   connect(cor.ports[2],portsCor[2])
-    annotation (Line(points={{162.545,60.9},{164,60.9},{164,26},{90,26},{90,46},{95,46}}, color={0,127,255},smooth=Smooth.None));
+    annotation (Line(points={{162.545,60.9},{164,60.9},{164,26},{90,26},{90,46},
+          {95,46}},                                                                       color={0,127,255},smooth=Smooth.None));
   connect(leaSou.port_b,sou.ports[3])
     annotation (Line(points={{-22,400},{-2,400},{-2,-72},{134,-72},{134,-54},{164,-54},{164,-43.1}},color={0,127,255},smooth=Smooth.None,thickness=0.5));
   connect(leaEas.port_b,eas.ports[3])
@@ -233,7 +253,8 @@ equation
   connect(leaWes.port_b,wes.ports[3])
     annotation (Line(points={{-20,280},{2,280},{2,58.9},{32,58.9}},color={0,127,255},smooth=Smooth.None,thickness=0.5));
   connect(opeSouCor.port_b1,cor.ports[3])
-    annotation (Line(points={{104,16},{164,16},{164,34},{162.909,34},{162.909,60.9}},color={0,127,255},smooth=Smooth.None,thickness=0.5));
+    annotation (Line(points={{104,16},{164,16},{164,34},{162.909,34},{162.909,
+          60.9}},                                                                    color={0,127,255},smooth=Smooth.None,thickness=0.5));
   connect(opeSouCor.port_a2,cor.ports[4])
     annotation (Line(points={{104,4},{164,4},{164,60.9},{163.273,60.9}},color={0,127,255},smooth=Smooth.None,thickness=0.5));
   connect(opeSouCor.port_a1,sou.ports[4])
@@ -246,7 +267,8 @@ equation
   connect(opeEasCor.port_a2,eas.ports[5])
     annotation (Line(points={{270,42},{290,42},{290,68.9},{321.6,68.9}},color={0,127,255},smooth=Smooth.None,thickness=0.5));
   connect(opeEasCor.port_a1,cor.ports[5])
-    annotation (Line(points={{250,54},{190,54},{190,34},{142,34},{142,60.9},{163.636,60.9}},color={0,127,255},smooth=Smooth.None,thickness=0.5));
+    annotation (Line(points={{250,54},{190,54},{190,34},{142,34},{142,60.9},{
+          163.636,60.9}},                                                                   color={0,127,255},smooth=Smooth.None,thickness=0.5));
   connect(opeEasCor.port_b2,cor.ports[6])
     annotation (Line(points={{250,42},{190,42},{190,34},{142,34},{142,60.9},{164,60.9}},color={0,127,255},smooth=Smooth.None,thickness=0.5));
   connect(opeNorCor.port_b1,nor.ports[4])
@@ -254,19 +276,24 @@ equation
   connect(opeNorCor.port_a2,nor.ports[5])
     annotation (Line(points={{100,78},{108,78},{108,106},{164,106},{164,116.9},{165.6,116.9}},color={0,127,255},smooth=Smooth.None,thickness=0.5));
   connect(opeNorCor.port_a1,cor.ports[7])
-    annotation (Line(points={{80,90},{76,90},{76,60},{142,60},{142,60.9},{164.364,60.9}},color={0,127,255},smooth=Smooth.None));
+    annotation (Line(points={{80,90},{76,90},{76,60},{142,60},{142,60.9},{
+          164.364,60.9}},                                                                color={0,127,255},smooth=Smooth.None));
   connect(opeNorCor.port_b2,cor.ports[8])
-    annotation (Line(points={{80,78},{76,78},{76,60},{142,60},{142,60.9},{164.727,60.9}},color={0,127,255},smooth=Smooth.None,thickness=0.5));
+    annotation (Line(points={{80,78},{76,78},{76,60},{142,60},{142,60.9},{
+          164.727,60.9}},                                                                color={0,127,255},smooth=Smooth.None,thickness=0.5));
   connect(opeWesCor.port_b1,cor.ports[9])
-    annotation (Line(points={{40,-4},{56,-4},{56,26},{164,26},{164,36},{165.091,36},{165.091,60.9}},color={0,127,255},smooth=Smooth.None,thickness=0.5));
+    annotation (Line(points={{40,-4},{56,-4},{56,26},{164,26},{164,36},{165.091,
+          36},{165.091,60.9}},                                                                      color={0,127,255},smooth=Smooth.None,thickness=0.5));
   connect(opeWesCor.port_a2,cor.ports[10])
-    annotation (Line(points={{40,-16},{56,-16},{56,26},{164,26},{164,60.9},{165.455,60.9}},color={0,127,255},smooth=Smooth.None,thickness=0.5));
+    annotation (Line(points={{40,-16},{56,-16},{56,26},{164,26},{164,60.9},{
+          165.455,60.9}},                                                                  color={0,127,255},smooth=Smooth.None,thickness=0.5));
   connect(opeWesCor.port_a1,wes.ports[4])
     annotation (Line(points={{20,-4},{14,-4},{14,44},{30,44},{30,58.9},{32.8,58.9}},color={0,127,255},smooth=Smooth.None,thickness=0.5));
   connect(opeWesCor.port_b2,wes.ports[5])
     annotation (Line(points={{20,-16},{14,-16},{14,44},{30,44},{30,58.9},{33.6,58.9}},color={0,127,255},smooth=Smooth.None,thickness=0.5));
   connect(cor.ports[11],senRelPre.port_a)
-    annotation (Line(points={{165.818,60.9},{164,60.9},{164,24},{128,24},{128,250},{60,250}},color={0,127,255},smooth=Smooth.None,thickness=0.5));
+    annotation (Line(points={{165.818,60.9},{164,60.9},{164,24},{128,24},{128,
+          250},{60,250}},                                                                    color={0,127,255},smooth=Smooth.None,thickness=0.5));
   connect(sou.qGai_flow,qGai_flow.y)
     annotation (Line(points={{142,-14},{64,-14},{64,-30},{-118,-30}},color={0,0,127}));
   connect(wes.qGai_flow,qGai_flow.y)
@@ -360,6 +387,28 @@ equation
       index=-1,
       extent={{-6,3},{-6,3}},
       horizontalAlignment=TextAlignment.Right));
+  connect(firOrdTRad.y, TOpe.u2) annotation (Line(points={{321,418},{330,418},{
+          330,424},{338,424}}, color={0,0,127}));
+  connect(sou.TRad, firOrdTRad[1].u) annotation (Line(points={{185,-10},{262,
+          -10},{262,418},{298,418}}, color={0,0,127}));
+  connect(eas.TRad, firOrdTRad[2].u) annotation (Line(points={{341,102},{354,
+          102},{354,118},{262,118},{262,418},{298,418}}, color={0,0,127}));
+  connect(nor.TRad, firOrdTRad[3].u) annotation (Line(points={{185,150},{262,
+          150},{262,418},{298,418}}, color={0,0,127}));
+  connect(wes.TRad, firOrdTRad[4].u) annotation (Line(points={{53,92},{60,92},{
+          60,182},{262,182},{262,418},{298,418}}, color={0,0,127}));
+  connect(cor.TRad, firOrdTRad[5].u) annotation (Line(points={{185,94},{262,94},
+          {262,418},{298,418}}, color={0,0,127}));
+  connect(temAirSou.T, TOpe[1].u1) annotation (Line(points={{311,350},{326,350},
+          {326,436},{338,436}}, color={0,0,127}));
+  connect(temAirEas.T, TOpe[2].u1) annotation (Line(points={{313,320},{326,320},
+          {326,436},{338,436}}, color={0,0,127}));
+  connect(temAirNor.T, TOpe[3].u1) annotation (Line(points={{313,290},{326,290},
+          {326,436},{338,436}}, color={0,0,127}));
+  connect(temAirWes.T, TOpe[4].u1) annotation (Line(points={{313,258},{326,258},
+          {326,436},{338,436}}, color={0,0,127}));
+  connect(temAirCor.T, TOpe[5].u1) annotation (Line(points={{315,228},{326,228},
+          {326,436},{338,436}}, color={0,0,127}));
   annotation (
     Diagram(
       coordinateSystem(

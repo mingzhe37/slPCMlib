@@ -1,7 +1,8 @@
 within slPCMlib.Components.RadiantSlabs.Examples;
 model RadiantHeatingCooling_TRoom_Baseline
   "Example model with one thermal zone with a radiant floor where the cooling is controlled based on the room air temperature"
-  extends slPCMlib.Components.RadiantSlabs.BaseClasses.FloorComplete(building(
+  extends slPCMlib.Components.RadiantSlabs.BaseClasses.FloorComplete(T_start=
+        296.15,                                                      building(
       idfName=idfName,
       epwName=epwName,
       weaName=weaName));
@@ -69,7 +70,8 @@ model RadiantHeatingCooling_TRoom_Baseline
     "Floor of the attic above the living room"
     annotation (Placement(transformation(extent={{-10,-10},{10,10}},rotation=270,origin={722,224})));
 
-  Buildings.Controls.OBC.RadiantSystems.Cooling.HighMassSupplyTemperature_TRoomRelHum conCoo_sou(TSupSet_min=289.15)
+  Buildings.Controls.OBC.RadiantSystems.Cooling.HighMassSupplyTemperature_TRoomRelHum conCoo_sou(
+      TSupSet_min=285.15)
     "Controller for radiant cooling" annotation (Placement(transformation(extent={{480,234},{500,254}})));
 //initial equation
   // The floor area can be obtained from EnergyPlus, but it is a structural parameter used to
@@ -113,7 +115,8 @@ model RadiantHeatingCooling_TRoom_Baseline
         extent={{-10,-10},{10,10}},
         rotation=270,
         origin={722,104})));
-  Buildings.Controls.OBC.RadiantSystems.Cooling.HighMassSupplyTemperature_TRoomRelHum conCoo_nor(TSupSet_min=289.15)
+  Buildings.Controls.OBC.RadiantSystems.Cooling.HighMassSupplyTemperature_TRoomRelHum conCoo_nor(
+      TSupSet_min=285.15)
     "Controller for radiant cooling" annotation (Placement(transformation(extent={{480,114},{500,134}})));
   ParallelCircuitsSlab                                             slaCeiEas(
     redeclare package Medium = MediumW,
@@ -149,7 +152,8 @@ model RadiantHeatingCooling_TRoom_Baseline
         extent={{-10,-10},{10,10}},
         rotation=270,
         origin={722,164})));
-  Buildings.Controls.OBC.RadiantSystems.Cooling.HighMassSupplyTemperature_TRoomRelHum conCoo_eas(TSupSet_min=289.15)
+  Buildings.Controls.OBC.RadiantSystems.Cooling.HighMassSupplyTemperature_TRoomRelHum conCoo_eas(
+      TSupSet_min=285.15)
     "Controller for radiant cooling" annotation (Placement(transformation(extent={{480,174},{500,194}})));
   ParallelCircuitsSlab                                             slaCeiWes(
     redeclare package Medium = MediumW,
@@ -185,7 +189,8 @@ model RadiantHeatingCooling_TRoom_Baseline
         extent={{-10,-10},{10,10}},
         rotation=270,
         origin={722,44})));
-  Buildings.Controls.OBC.RadiantSystems.Cooling.HighMassSupplyTemperature_TRoomRelHum conCoo_wes(TSupSet_min=289.15)
+  Buildings.Controls.OBC.RadiantSystems.Cooling.HighMassSupplyTemperature_TRoomRelHum conCoo_wes(
+      TSupSet_min=285.15)
     "Controller for radiant cooling" annotation (Placement(transformation(extent={{480,54},{500,74}})));
   ParallelCircuitsSlab                                             slaCeiCor(
     redeclare package Medium = MediumW,
@@ -221,7 +226,8 @@ model RadiantHeatingCooling_TRoom_Baseline
         extent={{-10,-10},{10,10}},
         rotation=270,
         origin={722,-16})));
-  Buildings.Controls.OBC.RadiantSystems.Cooling.HighMassSupplyTemperature_TRoomRelHum conCoo_cor(TSupSet_min=289.15)
+  Buildings.Controls.OBC.RadiantSystems.Cooling.HighMassSupplyTemperature_TRoomRelHum conCoo_cor(
+      TSupSet_min=285.15)
     "Controller for radiant cooling" annotation (Placement(transformation(extent={{480,-6},{500,14}})));
   Modelica.Blocks.Routing.DeMultiplex demux_TRoo(n=5)
     annotation (Placement(transformation(extent={{400,210},{420,230}})));
@@ -250,17 +256,21 @@ model RadiantHeatingCooling_TRoom_Baseline
   parameter Buildings.HeatTransfer.Data.OpaqueConstructions.Generic layCeiCor(nLay=3, material={gypSum,layPCM,
         effIns}) "Material layers from surface a to b (8cm concrete, 10 cm insulation, 18+2 cm concrete)"
     annotation (Placement(transformation(extent={{700,340},{720,360}})));
-  parameter Modelica.Units.SI.Temperature T_cons_start=290.15
+  parameter Modelica.Units.SI.Temperature T_cons_start=291.65
     "Initial construction temperature in the layer that contains the pipes, used if steadyStateInitial = false";
-  parameter Buildings.HeatTransfer.Data.OpaqueConstructions.Generic PERClayCei(nLay=4, material={
-        Buildings.HeatTransfer.Data.Solids.Concrete(x=0.08),Buildings.HeatTransfer.Data.Solids.InsulationBoard(x=
-        0.10),Buildings.HeatTransfer.Data.Solids.Concrete(x=0.1),Buildings.HeatTransfer.Data.Solids.Concrete(x=0.02)})
+  parameter Buildings.HeatTransfer.Data.OpaqueConstructions.Generic PERClayCei(nLay=4, material
+      ={Buildings.HeatTransfer.Data.Solids.Concrete(x=0.08),
+        Buildings.HeatTransfer.Data.Solids.InsulationBoard(x=0.10),
+        Buildings.HeatTransfer.Data.Solids.Concrete(x=0.05),
+        Buildings.HeatTransfer.Data.Solids.GypsumBoard(x=0.02)})
                 "Material layers from surface a to b (8cm concrete, 10 cm insulation, 18+2 cm concrete)"
     annotation (Placement(transformation(extent={{460,340},{480,360}})));
-  parameter Buildings.HeatTransfer.Data.OpaqueConstructions.Generic PERClayCei_Cor(nLay=4, material={
-        Buildings.HeatTransfer.Data.Solids.Concrete(x=0.02),Buildings.HeatTransfer.Data.Solids.Concrete(x=0.1),
-        Buildings.HeatTransfer.Data.Solids.InsulationBoard(x=0.10),Buildings.HeatTransfer.Data.Solids.Concrete(x=
-        0.08)}) "Material layers from surface a to b (8cm concrete, 10 cm insulation, 18+2 cm concrete)"
+  parameter Buildings.HeatTransfer.Data.OpaqueConstructions.Generic PERClayCei_Cor(nLay=4, material
+      ={Buildings.HeatTransfer.Data.Solids.GypsumBoard(x=0.02),
+        Buildings.HeatTransfer.Data.Solids.Concrete(x=0.05),
+        Buildings.HeatTransfer.Data.Solids.InsulationBoard(x=0.10),
+        Buildings.HeatTransfer.Data.Solids.Concrete(x=0.08)})
+                "Material layers from surface a to b (8cm concrete, 10 cm insulation, 18+2 cm concrete)"
     annotation (Placement(transformation(extent={{400,340},{420,360}})));
 protected
   Buildings.Controls.OBC.CDL.Reals.Sources.Constant phi_Zon[5](k=0.5)
@@ -371,15 +381,16 @@ equation
     annotation (Line(points={{636,-6},{636,4},{722,4},{722,-6}},           color={191,0,0}));
   connect(slaCeiCor.surf_b, attFloCor.heaPorBac)
     annotation (Line(points={{636,-26},{636,-36},{722,-36},{722,-25.8}},     color={191,0,0}));
-  connect(multiplex5_1.y, demux_TRoo.u)
-    annotation (Line(points={{361,290},{380,290},{380,220},{398,220}}, color={0,0,127}));
   connect(phi_Zon.y, demux_PhiRoo.u) annotation (Line(points={{390,190},{398,190}}, color={0,0,127}));
+  connect(TOpe.y, demux_TRoo.u) annotation (Line(points={{361,430},{370,430},{
+          370,220},{398,220}}, color={0,0,127}));
   annotation (
     __Dymola_Commands(
       file="modelica://Buildings/Resources/Scripts/Dymola/ThermalZones/EnergyPlus_9_6_0/Examples/SingleFamilyHouse/RadiantHeatingCooling_TRoom.mos" "Simulate and plot"),
     experiment(
-      StartTime=16761600,
-      StopTime=17020800,
+      StartTime=20390400,
+      StopTime=20995200,
+      Interval=300,
       Tolerance=1e-07,
       __Dymola_Algorithm="Cvode"),
     Documentation(

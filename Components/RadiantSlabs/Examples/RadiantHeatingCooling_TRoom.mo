@@ -1,7 +1,8 @@
 within slPCMlib.Components.RadiantSlabs.Examples;
 model RadiantHeatingCooling_TRoom
   "Example model with one thermal zone with a radiant floor where the cooling is controlled based on the room air temperature"
-  extends slPCMlib.Components.RadiantSlabs.BaseClasses.FloorComplete(building(
+  extends slPCMlib.Components.RadiantSlabs.BaseClasses.FloorComplete(T_start=
+        296.15,                                                      building(
       idfName=idfName,
       epwName=epwName,
       weaName=weaName));
@@ -37,7 +38,7 @@ model RadiantHeatingCooling_TRoom
     allowFlowReversal=false,
     layers=PERClayCei,
     iLayPip=2,
-    pipe=Buildings.Fluid.Data.Pipes.PEX_DN_15(),
+    pipe=Buildings.Fluid.Data.Pipes.PEX_DN_10(),
     sysTyp=Buildings.Fluid.HeatExchangers.RadiantSlabs.Types.SystemType.Ceiling_Wall_or_Capillary,
     disPip=designPar.Radiant_loop_spacing,
     T_a_start=T_cons_start,
@@ -62,18 +63,10 @@ model RadiantHeatingCooling_TRoom
     use_T_in=true,
     nPorts=1) "Mass flow source for cooling water at prescribed temperature"
     annotation (Placement(transformation(extent={{582,214},{602,234}})));
-  Buildings.Controls.OBC.CDL.Reals.Sources.Constant TSetRooCoo(k(
-      final unit="K",
-      displayUnit="degC") = 297.15, y(final unit="K", displayUnit="degC")) "Room temperture set point for cooling"
-    annotation (Placement(transformation(extent={{400,240},{420,260}})));
-  Buildings.Controls.OBC.CDL.Conversions.BooleanToReal booToReaSou(realTrue=designPar.mCoo_flow_nominal_Sou)
-    "Cooling water mass flow rate" annotation (Placement(transformation(extent={{540,222},{560,242}})));
   Buildings.ThermalZones.EnergyPlus_9_6_0.OpaqueConstruction attFlo(surfaceName="Attic_floor_perimeter_south")
     "Floor of the attic above the living room"
     annotation (Placement(transformation(extent={{-10,-10},{10,10}},rotation=270,origin={722,224})));
 
-  Buildings.Controls.OBC.RadiantSystems.Cooling.HighMassSupplyTemperature_TRoomRelHum conCoo_sou(TSupSet_min=289.15)
-    "Controller for radiant cooling" annotation (Placement(transformation(extent={{480,234},{500,254}})));
 //initial equation
   // The floor area can be obtained from EnergyPlus, but it is a structural parameter used to
   // size the system and therefore we hard-code it here.
@@ -87,7 +80,7 @@ model RadiantHeatingCooling_TRoom
     allowFlowReversal=false,
     layers=PERClayCei,
     iLayPip=2,
-    pipe=Buildings.Fluid.Data.Pipes.PEX_DN_15(),
+    pipe=Buildings.Fluid.Data.Pipes.PEX_DN_10(),
     sysTyp=Buildings.Fluid.HeatExchangers.RadiantSlabs.Types.SystemType.Ceiling_Wall_or_Capillary,
     disPip=designPar.Radiant_loop_spacing,
     T_a_start=T_cons_start,
@@ -112,21 +105,17 @@ model RadiantHeatingCooling_TRoom
     use_T_in=true,
     nPorts=1) "Mass flow source for cooling water at prescribed temperature"
     annotation (Placement(transformation(extent={{582,94},{602,114}})));
-  Buildings.Controls.OBC.CDL.Conversions.BooleanToReal booToReaNor(realTrue=designPar.mCoo_flow_nominal_Nor)
-    "Cooling water mass flow rate" annotation (Placement(transformation(extent={{540,102},{560,122}})));
   Buildings.ThermalZones.EnergyPlus_9_6_0.OpaqueConstruction attFloNor(surfaceName="Attic_floor_perimeter_north")
     "Floor of the attic above the living room" annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=270,
         origin={722,104})));
-  Buildings.Controls.OBC.RadiantSystems.Cooling.HighMassSupplyTemperature_TRoomRelHum conCoo_nor(TSupSet_min=289.15)
-    "Controller for radiant cooling" annotation (Placement(transformation(extent={{480,114},{500,134}})));
   ParallelCircuitsSlab_PCM_fixed_Rx                                slaCeiEas(
     redeclare package Medium = MediumW,
     allowFlowReversal=false,
     layers=PERClayCei,
     iLayPip=2,
-    pipe=Buildings.Fluid.Data.Pipes.PEX_DN_15(),
+    pipe=Buildings.Fluid.Data.Pipes.PEX_DN_10(),
     sysTyp=Buildings.Fluid.HeatExchangers.RadiantSlabs.Types.SystemType.Ceiling_Wall_or_Capillary,
     disPip=designPar.Radiant_loop_spacing,
     T_a_start=T_cons_start,
@@ -151,21 +140,17 @@ model RadiantHeatingCooling_TRoom
     use_T_in=true,
     nPorts=1) "Mass flow source for cooling water at prescribed temperature"
     annotation (Placement(transformation(extent={{582,154},{602,174}})));
-  Buildings.Controls.OBC.CDL.Conversions.BooleanToReal booToReaEas(realTrue=designPar.mCoo_flow_nominal_Eas)
-    "Cooling water mass flow rate" annotation (Placement(transformation(extent={{540,162},{560,182}})));
   Buildings.ThermalZones.EnergyPlus_9_6_0.OpaqueConstruction attFloEas(surfaceName="Attic_floor_perimeter_east")
     "Floor of the attic above the living room" annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=270,
         origin={722,164})));
-  Buildings.Controls.OBC.RadiantSystems.Cooling.HighMassSupplyTemperature_TRoomRelHum conCoo_eas(TSupSet_min=289.15)
-    "Controller for radiant cooling" annotation (Placement(transformation(extent={{480,174},{500,194}})));
   ParallelCircuitsSlab_PCM_fixed_Rx                                slaCeiWes(
     redeclare package Medium = MediumW,
     allowFlowReversal=false,
     layers=PERClayCei,
     iLayPip=2,
-    pipe=Buildings.Fluid.Data.Pipes.PEX_DN_15(),
+    pipe=Buildings.Fluid.Data.Pipes.PEX_DN_10(),
     sysTyp=Buildings.Fluid.HeatExchangers.RadiantSlabs.Types.SystemType.Ceiling_Wall_or_Capillary,
     disPip=designPar.Radiant_loop_spacing,
     T_a_start=T_cons_start,
@@ -190,21 +175,17 @@ model RadiantHeatingCooling_TRoom
     use_T_in=true,
     nPorts=1) "Mass flow source for cooling water at prescribed temperature"
     annotation (Placement(transformation(extent={{582,34},{602,54}})));
-  Buildings.Controls.OBC.CDL.Conversions.BooleanToReal booToReaWes(realTrue=designPar.mCoo_flow_nominal_Wes)
-    "Cooling water mass flow rate" annotation (Placement(transformation(extent={{540,42},{560,62}})));
   Buildings.ThermalZones.EnergyPlus_9_6_0.OpaqueConstruction attFloWes(surfaceName="Attic_floor_perimeter_west")
     "Floor of the attic above the living room" annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=270,
         origin={722,44})));
-  Buildings.Controls.OBC.RadiantSystems.Cooling.HighMassSupplyTemperature_TRoomRelHum conCoo_wes(TSupSet_min=289.15)
-    "Controller for radiant cooling" annotation (Placement(transformation(extent={{480,54},{500,74}})));
   ParallelCircuitsSlab_PCM_fixed_Rx                                slaCeiCor(
     redeclare package Medium = MediumW,
     allowFlowReversal=false,
     layers=PERClayCei_Cor,
     iLayPip=1,
-    pipe=Buildings.Fluid.Data.Pipes.PEX_DN_15(),
+    pipe=Buildings.Fluid.Data.Pipes.PEX_DN_10(),
     sysTyp=Buildings.Fluid.HeatExchangers.RadiantSlabs.Types.SystemType.Ceiling_Wall_or_Capillary,
     disPip=designPar.Radiant_loop_spacing,
     T_a_start=T_cons_start,
@@ -229,15 +210,11 @@ model RadiantHeatingCooling_TRoom
     use_T_in=true,
     nPorts=1) "Mass flow source for cooling water at prescribed temperature"
     annotation (Placement(transformation(extent={{582,-26},{602,-6}})));
-  Buildings.Controls.OBC.CDL.Conversions.BooleanToReal booToReaCor(realTrue=designPar.mCoo_flow_nominal_Cor)
-    "Cooling water mass flow rate" annotation (Placement(transformation(extent={{540,-18},{560,2}})));
   Buildings.ThermalZones.EnergyPlus_9_6_0.OpaqueConstruction attFloCor(surfaceName="Core_ZN_ceiling")
     "Floor of the attic above the living room" annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=270,
         origin={722,-16})));
-  Buildings.Controls.OBC.RadiantSystems.Cooling.HighMassSupplyTemperature_TRoomRelHum conCoo_cor(TSupSet_min=289.15)
-    "Controller for radiant cooling" annotation (Placement(transformation(extent={{480,-6},{500,14}})));
   Modelica.Blocks.Routing.DeMultiplex demux_TRoo(n=5)
     annotation (Placement(transformation(extent={{400,210},{420,230}})));
   Modelica.Blocks.Routing.DeMultiplex demux_PhiRoo(n=5)
@@ -248,8 +225,8 @@ model RadiantHeatingCooling_TRoom
     QCoo_flow_nominal_Nor=-5000,
     QCoo_flow_nominal_Wes=-4500,
     QCoo_flow_nominal_Cor=-5000,
-    Radiant_loop_spacing=0.15,
-    PCM_thickness=0.05)          annotation (Placement(transformation(extent={{520,340},{540,360}})));
+    Radiant_loop_spacing=0.1,
+    PCM_thickness=0.02)          annotation (Placement(transformation(extent={{520,340},{540,360}})));
   parameter Buildings.HeatTransfer.Data.Solids.GypsumBoard gypSum(x=0.016)
     annotation (Placement(transformation(extent={{640,340},{660,360}})));
   parameter Buildings.HeatTransfer.Data.Solids.Generic layPCM(
@@ -275,8 +252,39 @@ model RadiantHeatingCooling_TRoom
          0.10),Buildings.HeatTransfer.Data.Solids.Concrete(x=0.08)})
                 "Material layers from surface a to b (8cm concrete, 10 cm insulation, 18+2 cm concrete)"
     annotation (Placement(transformation(extent={{420,340},{440,360}})));
-  parameter Modelica.Units.SI.Temperature T_cons_start=290.15
+  parameter Modelica.Units.SI.Temperature T_cons_start=291.65
     "Initial construction temperature in the layer that contains the pipes, used if steadyStateInitial = false";
+  BaseClasses.Controller_T shiftingController_T(
+    mRadWatSup=designPar.mCoo_flow_nominal_Sou,
+    TSupSet_max=291.15,
+    TSupSet_min=285.15,
+    TSetZone=TSetZone)
+    annotation (Placement(transformation(extent={{480,240},{500,260}})));
+  BaseClasses.Controller_T shiftingController_T1(
+    mRadWatSup=designPar.mCoo_flow_nominal_Eas,
+    TSupSet_max=291.15,
+    TSupSet_min=285.15,
+    TSetZone=TSetZone)
+    annotation (Placement(transformation(extent={{480,180},{500,200}})));
+  BaseClasses.Controller_T shiftingController_T2(
+    mRadWatSup=designPar.mCoo_flow_nominal_Nor,
+    TSupSet_max=291.15,
+    TSupSet_min=285.15,
+    TSetZone=TSetZone)
+    annotation (Placement(transformation(extent={{480,120},{500,140}})));
+  BaseClasses.Controller_T shiftingController_T3(
+    mRadWatSup=designPar.mCoo_flow_nominal_Wes,
+    TSupSet_max=291.15,
+    TSupSet_min=285.15,
+    TSetZone=TSetZone)
+    annotation (Placement(transformation(extent={{480,60},{500,80}})));
+  BaseClasses.Controller_T shiftingController_T4(
+    mRadWatSup=designPar.mCoo_flow_nominal_Cor,
+    TSupSet_max=291.15,
+    TSupSet_min=285.15,
+    TSetZone=TSetZone)
+    annotation (Placement(transformation(extent={{480,0},{500,20}})));
+  parameter Modelica.Units.SI.Temperature TSetZone=297.15 "Constant output value";
 protected
   Buildings.Controls.OBC.CDL.Reals.Sources.Constant phi_Zon[5](k=0.5)
     "Internal heat gain (computed already in EnergyPlus)"
@@ -286,115 +294,97 @@ equation
                                                                                                 color={0,127,255}));
   connect(prePre.ports[1], slaCeiSou.port_b) annotation (Line(points={{674,224},{658,224},{658,222},{642,222}},
                                                                                           color={0,127,255}));
-  connect(booToReaSou.y, masFloSouCoo.m_flow_in) annotation (Line(points={{562,232},{580,232}},
-                                                                                              color={0,0,127}));
   connect(attFlo.heaPorFro, slaCeiSou.surf_a)
     annotation (Line(points={{722,234},{722,244},{636,244},{636,232}},
                                                                    color={191,0,0}));
   connect(slaCeiSou.surf_b, attFlo.heaPorBac)
     annotation (Line(points={{636,212},{636,204},{722,204},{722,214.2}},
                                                                    color={191,0,0}));
-  connect(conCoo_sou.on, booToReaSou.u)
-    annotation (Line(points={{502,242},{530,242},{530,232},{538,232}},
-                                                                   color={255,0,255}));
-  connect(conCoo_sou.TRooSet, TSetRooCoo.y) annotation (Line(points={{478,250},{422,250}},
-                                                                                         color={0,0,127}));
-  connect(conCoo_sou.TSupSet, masFloSouCoo.T_in)
-    annotation (Line(points={{502,250},{570,250},{570,228},{580,228}},
-                                                                   color={0,0,127}));
   connect(masFloSouCoo1.ports[1], slaCeiNor.port_a)
     annotation (Line(points={{602,104},{622,104}}, color={0,127,255}));
   connect(prePre1.ports[1], slaCeiNor.port_b) annotation (Line(points={{674,104},{642,104}}, color={0,127,255}));
-  connect(booToReaNor.y, masFloSouCoo1.m_flow_in) annotation (Line(points={{562,112},{580,112}}, color={0,0,127}));
   connect(attFloNor.heaPorFro, slaCeiNor.surf_a)
     annotation (Line(points={{722,114},{722,124},{636,124},{636,114}}, color={191,0,0}));
-  connect(conCoo_nor.on, booToReaNor.u)
-    annotation (Line(points={{502,122},{530,122},{530,112},{538,112}}, color={255,0,255}));
-  connect(conCoo_nor.TSupSet, masFloSouCoo1.T_in)
-    annotation (Line(points={{502,130},{570,130},{570,108},{580,108}}, color={0,0,127}));
   connect(slaCeiNor.surf_b, attFloNor.heaPorBac)
     annotation (Line(points={{636,94},{636,84},{722,84},{722,94.2}},         color={191,0,0}));
   connect(masFloSouCoo2.ports[1], slaCeiEas.port_a)
     annotation (Line(points={{602,164},{622,164}}, color={0,127,255}));
   connect(prePre2.ports[1], slaCeiEas.port_b) annotation (Line(points={{674,164},{642,164}}, color={0,127,255}));
-  connect(booToReaEas.y, masFloSouCoo2.m_flow_in) annotation (Line(points={{562,172},{580,172}}, color={0,0,127}));
   connect(attFloEas.heaPorFro, slaCeiEas.surf_a)
     annotation (Line(points={{722,174},{722,184},{636,184},{636,174}}, color={191,0,0}));
-  connect(conCoo_eas.on, booToReaEas.u)
-    annotation (Line(points={{502,182},{530,182},{530,172},{538,172}}, color={255,0,255}));
-  connect(conCoo_eas.TSupSet, masFloSouCoo2.T_in)
-    annotation (Line(points={{502,190},{570,190},{570,168},{580,168}}, color={0,0,127}));
   connect(slaCeiEas.surf_b, attFloEas.heaPorBac)
     annotation (Line(points={{636,154},{636,144},{722,144},{722,154.2}}, color={191,0,0}));
   connect(masFloSouCoo3.ports[1], slaCeiWes.port_a)
     annotation (Line(points={{602,44},{622,44}},     color={0,127,255}));
   connect(prePre3.ports[1], slaCeiWes.port_b) annotation (Line(points={{674,44},{642,44}},     color={0,127,255}));
-  connect(booToReaWes.y, masFloSouCoo3.m_flow_in)
-    annotation (Line(points={{562,52},{580,52}},     color={0,0,127}));
   connect(attFloWes.heaPorFro, slaCeiWes.surf_a)
     annotation (Line(points={{722,54},{722,64},{636,64},{636,54}},         color={191,0,0}));
-  connect(conCoo_wes.on, booToReaWes.u)
-    annotation (Line(points={{502,62},{530,62},{530,52},{538,52}},         color={255,0,255}));
-  connect(conCoo_wes.TSupSet, masFloSouCoo3.T_in)
-    annotation (Line(points={{502,70},{570,70},{570,48},{580,48}},         color={0,0,127}));
   connect(slaCeiWes.surf_b, attFloWes.heaPorBac)
     annotation (Line(points={{636,34},{636,24},{722,24},{722,34.2}},         color={191,0,0}));
   connect(masFloSouCoo4.ports[1], slaCeiCor.port_a)
     annotation (Line(points={{602,-16},{622,-16}},   color={0,127,255}));
   connect(prePre4.ports[1], slaCeiCor.port_b) annotation (Line(points={{674,-16},{642,-16}},   color={0,127,255}));
-  connect(booToReaCor.y, masFloSouCoo4.m_flow_in)
-    annotation (Line(points={{562,-8},{580,-8}},     color={0,0,127}));
-  connect(conCoo_cor.on, booToReaCor.u)
-    annotation (Line(points={{502,2},{530,2},{530,-8},{538,-8}},           color={255,0,255}));
-  connect(conCoo_cor.TSupSet, masFloSouCoo4.T_in)
-    annotation (Line(points={{502,10},{570,10},{570,-12},{580,-12}},       color={0,0,127}));
-  connect(TSetRooCoo.y, conCoo_eas.TRooSet)
-    annotation (Line(points={{422,250},{472,250},{472,190},{478,190}},
-                                                                     color={0,0,127}));
-  connect(TSetRooCoo.y, conCoo_nor.TRooSet)
-    annotation (Line(points={{422,250},{472,250},{472,130},{478,130}},
-                                                                     color={0,0,127}));
-  connect(TSetRooCoo.y, conCoo_wes.TRooSet)
-    annotation (Line(points={{422,250},{472,250},{472,70},{478,70}},   color={0,0,127}));
-  connect(TSetRooCoo.y, conCoo_cor.TRooSet)
-    annotation (Line(points={{422,250},{472,250},{472,10},{478,10}},   color={0,0,127}));
-  connect(demux_TRoo.y[1], conCoo_sou.TRoo)
-    annotation (Line(points={{420,217.2},{470,217.2},{470,240},{478,240}},
-                                                                       color={0,0,127}));
-  connect(demux_TRoo.y[2], conCoo_eas.TRoo)
-    annotation (Line(points={{420,218.6},{470,218.6},{470,180},{478,180}},
-                                                                         color={0,0,127}));
-  connect(demux_TRoo.y[3], conCoo_nor.TRoo)
-    annotation (Line(points={{420,220},{470,220},{470,120},{478,120}},
-                                                                     color={0,0,127}));
-  connect(demux_TRoo.y[4], conCoo_wes.TRoo)
-    annotation (Line(points={{420,221.4},{422,221.4},{422,216},{470,216},{470,60},{478,60}}, color={0,0,127}));
-  connect(demux_TRoo.y[5], conCoo_cor.TRoo)
-    annotation (Line(points={{420,222.8},{422,222.8},{422,216},{470,216},{470,0},{478,0}},   color={0,0,127}));
-  connect(demux_PhiRoo.y[1], conCoo_sou.phiRoo)
-    annotation (Line(points={{420,187.2},{460,187.2},{460,236},{478,236}},
-                                                                         color={0,0,127}));
-  connect(demux_PhiRoo.y[2], conCoo_eas.phiRoo)
-    annotation (Line(points={{420,188.6},{460,188.6},{460,176},{478,176}}, color={0,0,127}));
-  connect(demux_PhiRoo.y[3], conCoo_nor.phiRoo)
-    annotation (Line(points={{420,190},{460,190},{460,116},{478,116}}, color={0,0,127}));
-  connect(demux_PhiRoo.y[4], conCoo_wes.phiRoo)
-    annotation (Line(points={{420,191.4},{460,191.4},{460,56},{478,56}},   color={0,0,127}));
-  connect(demux_PhiRoo.y[5], conCoo_cor.phiRoo)
-    annotation (Line(points={{420,192.8},{460,192.8},{460,-4},{478,-4}},   color={0,0,127}));
   connect(slaCeiCor.surf_a, attFloCor.heaPorFro)
     annotation (Line(points={{636,-6},{636,4},{722,4},{722,-6}},           color={191,0,0}));
   connect(slaCeiCor.surf_b, attFloCor.heaPorBac)
     annotation (Line(points={{636,-26},{636,-36},{722,-36},{722,-25.8}},     color={191,0,0}));
-  connect(multiplex5_1.y, demux_TRoo.u)
-    annotation (Line(points={{361,290},{380,290},{380,220},{398,220}}, color={0,0,127}));
   connect(phi_Zon.y, demux_PhiRoo.u) annotation (Line(points={{388,190},{398,190}}, color={0,0,127}));
+  connect(TOpe.y, demux_TRoo.u) annotation (Line(points={{361,430},{370,430},{
+          370,220},{398,220}}, color={0,0,127}));
+  connect(shiftingController_T.TSetCoo, masFloSouCoo.T_in) annotation (Line(
+        points={{501,255},{568,255},{568,228},{580,228}}, color={0,0,127}));
+  connect(shiftingController_T.mWatSup, masFloSouCoo.m_flow_in) annotation (
+      Line(points={{501,245},{572,245},{572,232},{580,232}}, color={0,0,127}));
+  connect(shiftingController_T1.TSetCoo, masFloSouCoo2.T_in) annotation (Line(
+        points={{501,195},{568,195},{568,168},{580,168}}, color={0,0,127}));
+  connect(shiftingController_T1.mWatSup, masFloSouCoo2.m_flow_in) annotation (
+      Line(points={{501,185},{572,185},{572,172},{580,172}}, color={0,0,127}));
+  connect(shiftingController_T2.TSetCoo, masFloSouCoo1.T_in) annotation (Line(
+        points={{501,135},{568,135},{568,108},{580,108}}, color={0,0,127}));
+  connect(shiftingController_T2.mWatSup, masFloSouCoo1.m_flow_in) annotation (
+      Line(points={{501,125},{572,125},{572,112},{580,112}}, color={0,0,127}));
+  connect(shiftingController_T3.mWatSup, masFloSouCoo3.m_flow_in) annotation (
+      Line(points={{501,65},{572,65},{572,52},{580,52}}, color={0,0,127}));
+  connect(shiftingController_T3.TSetCoo, masFloSouCoo3.T_in) annotation (Line(
+        points={{501,75},{520,75},{520,48},{580,48}}, color={0,0,127}));
+  connect(shiftingController_T4.TSetCoo, masFloSouCoo4.T_in) annotation (Line(
+        points={{501,15},{568,15},{568,-12},{580,-12}}, color={0,0,127}));
+  connect(shiftingController_T4.mWatSup, masFloSouCoo4.m_flow_in) annotation (
+      Line(points={{501,5},{572,5},{572,-8},{580,-8}}, color={0,0,127}));
+  connect(demux_PhiRoo.y[1], shiftingController_T.phiZon) annotation (Line(
+        points={{420,187.2},{472,187.2},{472,242},{478,242}}, color={0,0,127}));
+  connect(demux_PhiRoo.y[2], shiftingController_T1.phiZon) annotation (Line(
+        points={{420,188.6},{424,188.6},{424,188},{472,188},{472,182},{478,182}},
+        color={0,0,127}));
+  connect(demux_PhiRoo.y[3], shiftingController_T2.phiZon) annotation (Line(
+        points={{420,190},{424,190},{424,188},{472,188},{472,122},{478,122}},
+        color={0,0,127}));
+  connect(demux_PhiRoo.y[4], shiftingController_T3.phiZon) annotation (Line(
+        points={{420,191.4},{424,191.4},{424,188},{472,188},{472,62},{478,62}},
+        color={0,0,127}));
+  connect(demux_PhiRoo.y[5], shiftingController_T4.phiZon) annotation (Line(
+        points={{420,192.8},{424,192.8},{424,188},{472,188},{472,2},{478,2}},
+        color={0,0,127}));
+  connect(demux_TRoo.y[1], shiftingController_T.temZon) annotation (Line(points
+        ={{420,217.2},{468,217.2},{468,256},{478,256}}, color={0,0,127}));
+  connect(demux_TRoo.y[2], shiftingController_T1.temZon) annotation (Line(
+        points={{420,218.6},{468,218.6},{468,196},{478,196}}, color={0,0,127}));
+  connect(demux_TRoo.y[3], shiftingController_T2.temZon) annotation (Line(
+        points={{420,220},{424,220},{424,216},{468,216},{468,136},{478,136}},
+        color={0,0,127}));
+  connect(demux_TRoo.y[4], shiftingController_T3.temZon) annotation (Line(
+        points={{420,221.4},{424,221.4},{424,216},{468,216},{468,76},{478,76}},
+        color={0,0,127}));
+  connect(demux_TRoo.y[5], shiftingController_T4.temZon) annotation (Line(
+        points={{420,222.8},{424,222.8},{424,216},{468,216},{468,16},{478,16}},
+        color={0,0,127}));
   annotation (
     __Dymola_Commands(
       file="modelica://Buildings/Resources/Scripts/Dymola/ThermalZones/EnergyPlus_9_6_0/Examples/SingleFamilyHouse/RadiantHeatingCooling_TRoom.mos" "Simulate and plot"),
     experiment(
-      StartTime=16761600,
-      StopTime=17020800,
+      StartTime=20390400,
+      StopTime=20995200,
+      Interval=300,
       Tolerance=1e-07,
       __Dymola_Algorithm="Cvode"),
     Documentation(
