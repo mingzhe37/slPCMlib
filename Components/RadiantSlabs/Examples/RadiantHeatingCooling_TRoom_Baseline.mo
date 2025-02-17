@@ -219,8 +219,8 @@ model RadiantHeatingCooling_TRoom_Baseline
     QCoo_flow_nominal_Wes=-4500,
     QCoo_flow_nominal_Cor=-5000,
     Radiant_loop_spacing=0.15,
-    PCM_thickness=0.05)          annotation (Placement(transformation(extent={{800,340},
-            {820,360}})));
+    PCM_thickness=0.05)          annotation (Placement(transformation(extent={{780,340},
+            {800,360}})));
   parameter Modelica.Units.SI.Temperature T_cons_start=291.65
     "Initial construction temperature in the layer that contains the pipes, used if steadyStateInitial = false";
   parameter Buildings.HeatTransfer.Data.OpaqueConstructions.Generic PERClayCei(nLay=4, material
@@ -276,29 +276,31 @@ model RadiantHeatingCooling_TRoom_Baseline
     enable_temperature_protection=false,
     datHeaPum=
         Buildings.Fluid.HeatPumps.Data.ScrollWaterToWater.Heating.Viessmann_BW301A21_28kW_5_94COP_R410A())
-    "Heat pump" annotation (Placement(transformation(extent={{750,-66},{730,-86}})));
-  Buildings.Fluid.Sources.Boundary_ph prePreLoa(
+    "Heat pump" annotation (Placement(transformation(extent={{750,-122},{730,
+            -142}})));
+  Buildings.Fluid.Sources.Boundary_ph preLoa(
     redeclare package Medium = MediumW,
     nPorts=1,
     p(displayUnit="Pa") = 300000) "Pressure boundary condition"
-    annotation (Placement(transformation(extent={{820,-80},{800,-60}})));
+    annotation (Placement(transformation(extent={{820,-136},{800,-116}})));
  Buildings.Fluid.Geothermal.Boreholes.UTube borHol(
     redeclare package Medium = MediumG,
-    hBor=200,
+    hBor=150,
     dp_nominal=60000,
+    TExt0_start=291.15,
     dT_dz=0.0015,
     samplePeriod=604800,
-    m_flow_nominal=mBor_flow_nominal,
+    m_flow_nominal=mBor_flow_nominal/2,
     redeclare parameter Buildings.HeatTransfer.Data.BoreholeFillings.Bentonite
       matFil,
     redeclare parameter Buildings.HeatTransfer.Data.Soil.Sandstone matSoi,
     energyDynamics=Modelica.Fluid.Types.Dynamics.FixedInitial) "Borehole heat exchanger"
-    annotation (Placement(transformation(extent={{632,-126},{664,-94}})));
-  Buildings.Fluid.Sources.Boundary_ph pre1(
+    annotation (Placement(transformation(extent={{632,-210},{652,-190}})));
+  Buildings.Fluid.Sources.Boundary_ph preSou(
     redeclare package Medium = MediumG,
     p(displayUnit="Pa") = 300000,
-    nPorts=1) "Pressure boundary condition" annotation (Placement(transformation(extent={{540,
-            -120},{560,-100}})));
+    nPorts=1) "Pressure boundary condition"
+    annotation (Placement(transformation(extent={{540,-148},{560,-128}})));
   Buildings.Fluid.Sensors.TemperatureTwoPort senTemSup_heaPum(
     redeclare package Medium = MediumW,
     allowFlowReversal=false,
@@ -307,7 +309,7 @@ model RadiantHeatingCooling_TRoom_Baseline
         designPar.mCoo_flow_nominal_Cor),
     tau=0,
     transferHeat=true) "Water supply temperature"
-    annotation (Placement(transformation(extent={{770,-80},{790,-60}})));
+    annotation (Placement(transformation(extent={{770,-136},{790,-116}})));
   Buildings.Fluid.FixedResistances.Junction jun(
     redeclare package Medium = MediumW,
     energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
@@ -354,23 +356,23 @@ model RadiantHeatingCooling_TRoom_Baseline
         extent={{-10,-10},{10,10}},
         rotation=-90,
         origin={690,-16})));
-  Modelica.Blocks.Math.MinMax temMax(nu=5)
-    annotation (Placement(transformation(extent={{592,10},{612,30}})));
+  Modelica.Blocks.Math.MinMax temSetMin(nu=5)
+    annotation (Placement(transformation(extent={{560,-70},{540,-50}})));
   Buildings.Controls.OBC.CDL.Reals.PIDWithReset conSup(
     final controllerType=Buildings.Controls.OBC.CDL.Types.SimpleController.PI,
     k=4,
     Ti(displayUnit="min") = 60,
     r=10,
     yMax=1,
-    yMin=0.2,
+    yMin=0.1,
     reverseActing=false,
-    y_reset=0.2) "Controller for heat pump" annotation (Placement(transformation(extent={{640,-64},
-            {660,-44}})));
+    y_reset=0.1) "Controller for heat pump" annotation (Placement(transformation(extent={{600,-80},
+            {620,-60}})));
   Modelica.Blocks.MathBoolean.Or onBorHol(nu=5)
-    annotation (Placement(transformation(extent={{540,-80},{560,-60}})));
+    annotation (Placement(transformation(extent={{540,-118},{560,-98}})));
   Buildings.Controls.OBC.CDL.Conversions.BooleanToReal booToReaBorHol(realTrue=
         1) "Cooling water mass flow rate"
-    annotation (Placement(transformation(extent={{580,-80},{600,-60}})));
+    annotation (Placement(transformation(extent={{650,-130},{670,-110}})));
   Buildings.Fluid.Movers.SpeedControlled_y pumBor(
     redeclare package Medium = MediumG,
     energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
@@ -380,7 +382,7 @@ model RadiantHeatingCooling_TRoom_Baseline
       constantSpeed,
       speeds),
     inputType=Buildings.Fluid.Types.InputType.Continuous) "Pump"
-    annotation (Placement(transformation(extent={{680,-120},{700,-100}})));
+    annotation (Placement(transformation(extent={{702,-176},{722,-156}})));
   Buildings.Fluid.Sensors.TemperatureTwoPort senTemRet_heaPum(
     redeclare package Medium = MediumW,
     allowFlowReversal=false,
@@ -388,23 +390,98 @@ model RadiantHeatingCooling_TRoom_Baseline
     annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=-90,
-        origin={690,-52})));
+        origin={690,-50})));
   Buildings.Controls.OBC.CDL.Reals.Switch swiPum "Switch for circulation pumps"
-    annotation (Placement(transformation(extent={{736,-60},{756,-40}})));
+    annotation (Placement(transformation(extent={{650,-88},{670,-68}})));
   Buildings.Controls.OBC.CDL.Reals.Sources.Constant off(final k=0) "Output 0 to switch heater off"
-    annotation (Placement(transformation(extent={{706,-100},{720,-86}})));
+    annotation (Placement(transformation(extent={{620,-54},{634,-40}})));
  Buildings.Fluid.Geothermal.Boreholes.UTube borHol1(
     redeclare package Medium = MediumG,
-    hBor=200,
+    hBor=150,
     dp_nominal=60000,
+    TExt0_start=291.15,
     dT_dz=0.0015,
     samplePeriod=604800,
-    m_flow_nominal=mBor_flow_nominal,
+    m_flow_nominal=mBor_flow_nominal/2,
     redeclare parameter Buildings.HeatTransfer.Data.BoreholeFillings.Bentonite
       matFil,
     redeclare parameter Buildings.HeatTransfer.Data.Soil.Sandstone matSoi,
     energyDynamics=Modelica.Fluid.Types.Dynamics.FixedInitial) "Borehole heat exchanger"
-    annotation (Placement(transformation(extent={{592,-126},{624,-94}})));
+    annotation (Placement(transformation(extent={{632,-176},{652,-156}})));
+  Buildings.Fluid.FixedResistances.Junction jun4(
+    redeclare package Medium = MediumG,
+    energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+    m_flow_nominal={mBor_flow_nominal,-mBor_flow_nominal/2,-mBor_flow_nominal/2},
+    dp_nominal={0,0,0})                          annotation (Placement(
+        transformation(
+        extent={{-10,10},{10,-10}},
+        rotation=270,
+        origin={606,-166})));
+  Buildings.Fluid.FixedResistances.Junction jun5(
+    redeclare package Medium = MediumG,
+    energyDynamics=Modelica.Fluid.Types.Dynamics.SteadyState,
+    m_flow_nominal={mBor_flow_nominal/2,mBor_flow_nominal/2,-mBor_flow_nominal},
+    dp_nominal={0,0,0})                          annotation (Placement(
+        transformation(
+        extent={{-10,-10},{10,10}},
+        rotation=0,
+        origin={680,-166})));
+  Modelica.Blocks.Math.MinMax temDewMin(nu=5)
+    annotation (Placement(transformation(extent={{440,-112},{460,-92}})));
+  Modelica.Blocks.Sources.RealExpression temDewSou(y(
+      final unit="K",
+      displayUnit="degC") = conCoo_sou.dewPoi.TDewPoi)
+    annotation (Placement(transformation(extent={{380,-68},{400,-48}})));
+  Modelica.Blocks.Sources.RealExpression temDewSou1(y(
+      final unit="K",
+      displayUnit="degC") = conCoo_eas.dewPoi.TDewPoi)
+    annotation (Placement(transformation(extent={{380,-88},{400,-68}})));
+  Modelica.Blocks.Sources.RealExpression temDewSou2(y(
+      final unit="K",
+      displayUnit="degC") = conCoo_nor.dewPoi.TDewPoi)
+    annotation (Placement(transformation(extent={{380,-108},{400,-88}})));
+  Modelica.Blocks.Sources.RealExpression temDewSou3(y(
+      final unit="K",
+      displayUnit="degC") = conCoo_wes.dewPoi.TDewPoi)
+    annotation (Placement(transformation(extent={{380,-128},{400,-108}})));
+  Modelica.Blocks.Sources.RealExpression temDewSou4(y(
+      final unit="K",
+      displayUnit="degC") = conCoo_cor.dewPoi.TDewPoi)
+    annotation (Placement(transformation(extent={{380,-148},{400,-128}})));
+  Buildings.Controls.OBC.CDL.Reals.Max setPoiHeaPum
+    annotation (Placement(transformation(extent={{480,-100},{500,-80}})));
+  Modelica.Blocks.Sources.RealExpression QCon(y=-heaPum.QEva_flow)
+    "Condenser heat flow rate"
+    annotation (Placement(transformation(extent={{780,-40},{800,-20}})));
+  Modelica.Blocks.Sources.RealExpression PEle(y=heaPum.P + pumBor.P + (
+        slaCeiSou.dp*slaCeiSou.m_flow/1000/0.49 + slaCeiEas.dp*slaCeiEas.m_flow
+        /1000/0.49 + slaCeiNor.dp*slaCeiNor.m_flow/1000/0.49 + slaCeiWes.dp*
+        slaCeiWes.m_flow/1000/0.49 + slaCeiCor.dp*slaCeiCor.m_flow/1000/0.49))
+    "Electricity use"
+    annotation (Placement(transformation(extent={{780,-78},{800,-58}})));
+  Modelica.Blocks.Continuous.Integrator EHea(
+    k(final unit="1/m2"),
+    initType=Modelica.Blocks.Types.Init.InitialState,
+    y_start=0,
+    u(final unit="W"),
+    y(final unit="J/m2", displayUnit="kW.h/m2"))
+    "Produced heat per unit area of floor"
+    annotation (Placement(transformation(extent={{820,-40},{840,-20}})));
+  Modelica.Blocks.Continuous.Integrator EEle(
+    k(final unit="1/m2"),
+    initType=Modelica.Blocks.Types.Init.InitialState,
+    y_start=1E-10,
+    u(final unit="W"),
+    y(final unit="J/m2", displayUnit="kW.h/m2"))
+    "Electricity use per floor area"
+    annotation (Placement(transformation(extent={{820,-78},{840,-58}})));
+  Buildings.Controls.OBC.CDL.Reals.Divide COP "Coefficient of performance"
+    annotation (Placement(transformation(extent={{860,-60},{880,-40}})));
+  Modelica.Blocks.Sources.RealExpression PEleCirPum(y=(slaCeiSou.dp*slaCeiSou.m_flow
+        /1000/0.49 + slaCeiEas.dp*slaCeiEas.m_flow/1000/0.49 + slaCeiNor.dp*
+        slaCeiNor.m_flow/1000/0.49 + slaCeiWes.dp*slaCeiWes.m_flow/1000/0.49 +
+        slaCeiCor.dp*slaCeiCor.m_flow/1000/0.49)) "Electricity use"
+    annotation (Placement(transformation(extent={{780,20},{800,40}})));
 protected
   Buildings.Controls.OBC.CDL.Reals.Sources.Constant phi_Zon[5](k=0.5)
     "Internal heat gain (computed already in EnergyPlus)"
@@ -425,9 +502,6 @@ equation
                                                                    color={255,0,255}));
   connect(conCoo_sou.TRooSet, TSetRooCoo.y) annotation (Line(points={{478,250},{422,250}},
                                                                                          color={0,0,127}));
-  connect(conCoo_sou.TSupSet, masFloSouCoo.T_in)
-    annotation (Line(points={{502,250},{570,250},{570,228},{580,228}},
-                                                                   color={0,0,127}));
   connect(masFloSouCoo1.ports[1], slaCeiNor.port_a)
     annotation (Line(points={{602,104},{622,104}}, color={0,127,255}));
   connect(booToReaNor.y, masFloSouCoo1.m_flow_in) annotation (Line(points={{562,112},{580,112}}, color={0,0,127}));
@@ -435,8 +509,6 @@ equation
     annotation (Line(points={{722,114},{722,124},{636,124},{636,114}}, color={191,0,0}));
   connect(conCoo_nor.on, booToReaNor.u)
     annotation (Line(points={{502,122},{530,122},{530,112},{538,112}}, color={255,0,255}));
-  connect(conCoo_nor.TSupSet, masFloSouCoo1.T_in)
-    annotation (Line(points={{502,130},{570,130},{570,108},{580,108}}, color={0,0,127}));
   connect(slaCeiNor.surf_b, attFloNor.heaPorBac)
     annotation (Line(points={{636,94},{636,84},{722,84},{722,94.2}},         color={191,0,0}));
   connect(masFloSouCoo2.ports[1], slaCeiEas.port_a)
@@ -446,8 +518,6 @@ equation
     annotation (Line(points={{722,174},{722,184},{636,184},{636,174}}, color={191,0,0}));
   connect(conCoo_eas.on, booToReaEas.u)
     annotation (Line(points={{502,182},{530,182},{530,172},{538,172}}, color={255,0,255}));
-  connect(conCoo_eas.TSupSet, masFloSouCoo2.T_in)
-    annotation (Line(points={{502,190},{570,190},{570,168},{580,168}}, color={0,0,127}));
   connect(slaCeiEas.surf_b, attFloEas.heaPorBac)
     annotation (Line(points={{636,154},{636,144},{722,144},{722,154.2}}, color={191,0,0}));
   connect(masFloSouCoo3.ports[1], slaCeiWes.port_a)
@@ -458,8 +528,6 @@ equation
     annotation (Line(points={{722,54},{722,64},{636,64},{636,54}},         color={191,0,0}));
   connect(conCoo_wes.on, booToReaWes.u)
     annotation (Line(points={{502,62},{530,62},{530,52},{538,52}},         color={255,0,255}));
-  connect(conCoo_wes.TSupSet, masFloSouCoo3.T_in)
-    annotation (Line(points={{502,70},{570,70},{570,48},{580,48}},         color={0,0,127}));
   connect(slaCeiWes.surf_b, attFloWes.heaPorBac)
     annotation (Line(points={{636,34},{636,24},{722,24},{722,34.2}},         color={191,0,0}));
   connect(masFloSouCoo4.ports[1], slaCeiCor.port_a)
@@ -468,8 +536,6 @@ equation
     annotation (Line(points={{562,-8},{580,-8}},     color={0,0,127}));
   connect(conCoo_cor.on, booToReaCor.u)
     annotation (Line(points={{502,2},{530,2},{530,-8},{538,-8}},           color={255,0,255}));
-  connect(conCoo_cor.TSupSet, masFloSouCoo4.T_in)
-    annotation (Line(points={{502,10},{570,10},{570,-12},{580,-12}},       color={0,0,127}));
   connect(TSetRooCoo.y, conCoo_eas.TRooSet)
     annotation (Line(points={{422,250},{472,250},{472,190},{478,190}},
                                                                      color={0,0,127}));
@@ -522,9 +588,10 @@ equation
   connect(senTemRet_Cor.port_a, slaCeiCor.port_b)
     annotation (Line(points={{650,-16},{642,-16}}, color={0,127,255}));
   connect(heaPum.port_b2, senTemSup_heaPum.port_a)
-    annotation (Line(points={{750,-70},{770,-70}}, color={0,127,255}));
-  connect(senTemSup_heaPum.port_b, prePreLoa.ports[1])
-    annotation (Line(points={{790,-70},{800,-70}}, color={0,127,255}));
+    annotation (Line(points={{750,-126},{770,-126}},
+                                                   color={0,127,255}));
+  connect(senTemSup_heaPum.port_b, preLoa.ports[1])
+    annotation (Line(points={{790,-126},{800,-126}}, color={0,127,255}));
   connect(senTemRet_Sou.port_b, jun.port_1) annotation (Line(points={{670,222},{
           690,222},{690,174}}, color={0,127,255}));
   connect(senTemRet_Eas.port_b, jun.port_3)
@@ -542,62 +609,108 @@ equation
   connect(jun2.port_2, jun3.port_1)
     annotation (Line(points={{690,34},{690,-6}}, color={0,127,255}));
   connect(senTemSup_heaPum.T, conSup.u_m)
-    annotation (Line(points={{780,-59},{780,-34},{612,-34},{612,-68},{650,-68},
-          {650,-66}},                              color={0,0,127}));
-  connect(conCoo_sou.TSupSet, temMax.u[1]) annotation (Line(points={{502,250},{
-          572,250},{572,12},{584,12},{584,17.2},{592,17.2}},
-                                         color={0,0,127}));
-  connect(conCoo_eas.TSupSet, temMax.u[2]) annotation (Line(points={{502,190},{
-          572,190},{572,12},{584,12},{584,18.6},{592,18.6}},
-                                         color={0,0,127}));
-  connect(conCoo_nor.TSupSet, temMax.u[3]) annotation (Line(points={{502,130},{
-          572,130},{572,12},{584,12},{584,20},{592,20}},
-                                       color={0,0,127}));
-  connect(conCoo_wes.TSupSet, temMax.u[4]) annotation (Line(points={{502,70},{
-          572,70},{572,12},{584,12},{584,21.4},{592,21.4}},
-                                          color={0,0,127}));
-  connect(conCoo_cor.TSupSet, temMax.u[5]) annotation (Line(points={{502,10},{
-          584,10},{584,22.8},{592,22.8}}, color={0,0,127}));
+    annotation (Line(points={{780,-115},{780,-104},{610,-104},{610,-82}},
+                                                   color={0,0,127}));
+  connect(conCoo_sou.TSupSet, temSetMin.u[1]) annotation (Line(points={{502,250},
+          {572,250},{572,-62.8},{560,-62.8}},                 color={0,0,127}));
+  connect(conCoo_eas.TSupSet, temSetMin.u[2]) annotation (Line(points={{502,190},
+          {572,190},{572,-61.4},{560,-61.4}},                 color={0,0,127}));
+  connect(conCoo_nor.TSupSet, temSetMin.u[3]) annotation (Line(points={{502,130},
+          {572,130},{572,-60},{560,-60}},                 color={0,0,127}));
+  connect(conCoo_wes.TSupSet, temSetMin.u[4]) annotation (Line(points={{502,70},
+          {572,70},{572,-58.6},{560,-58.6}},                 color={0,0,127}));
+  connect(conCoo_cor.TSupSet, temSetMin.u[5]) annotation (Line(points={{502,10},
+          {572,10},{572,-57.2},{560,-57.2}},
+                                           color={0,0,127}));
   connect(conCoo_sou.on, onBorHol.u[1]) annotation (Line(points={{502,242},{532,
-          242},{532,-72.8},{540,-72.8}}, color={255,0,255}));
+          242},{532,-110.8},{540,-110.8}},
+                                         color={255,0,255}));
   connect(conCoo_eas.on, onBorHol.u[2]) annotation (Line(points={{502,182},{532,
-          182},{532,-71.4},{540,-71.4}}, color={255,0,255}));
+          182},{532,-109.4},{540,-109.4}},
+                                         color={255,0,255}));
   connect(conCoo_nor.on, onBorHol.u[3]) annotation (Line(points={{502,122},{532,
-          122},{532,-70},{540,-70}}, color={255,0,255}));
+          122},{532,-108},{540,-108}},
+                                     color={255,0,255}));
   connect(conCoo_wes.on, onBorHol.u[4]) annotation (Line(points={{502,62},{532,
-          62},{532,-68.6},{540,-68.6}}, color={255,0,255}));
+          62},{532,-106.6},{540,-106.6}},
+                                        color={255,0,255}));
   connect(conCoo_cor.on, onBorHol.u[5]) annotation (Line(points={{502,2},{532,2},
-          {532,-67.2},{540,-67.2}}, color={255,0,255}));
+          {532,-105.2},{540,-105.2}},
+                                    color={255,0,255}));
   connect(onBorHol.y, booToReaBorHol.u)
-    annotation (Line(points={{561.5,-70},{578,-70}}, color={255,0,255}));
-  connect(borHol.port_b, pumBor.port_a)
-    annotation (Line(points={{664,-110},{680,-110}}, color={0,127,255}));
-  connect(pumBor.port_b, heaPum.port_a1) annotation (Line(points={{700,-110},{
-          760,-110},{760,-82},{750,-82}}, color={0,127,255}));
+    annotation (Line(points={{561.5,-108},{632,-108},{632,-120},{648,-120}},
+                                                     color={255,0,255}));
+  connect(pumBor.port_b, heaPum.port_a1) annotation (Line(points={{722,-166},{
+          760,-166},{760,-138},{750,-138}},
+                                          color={0,127,255}));
   connect(booToReaBorHol.y, pumBor.y)
-    annotation (Line(points={{602,-70},{690,-70},{690,-98}}, color={0,0,127}));
+    annotation (Line(points={{672,-120},{712,-120},{712,-154}},
+                                                             color={0,0,127}));
   connect(jun3.port_2, senTemRet_heaPum.port_a)
-    annotation (Line(points={{690,-26},{690,-42}}, color={0,127,255}));
+    annotation (Line(points={{690,-26},{690,-40}}, color={0,127,255}));
+  connect(conSup.y, swiPum.u1) annotation (Line(points={{622,-70},{648,-70}},
+                               color={0,0,127}));
+  connect(off.y, swiPum.u3) annotation (Line(points={{635.4,-47},{638,-47},{638,
+          -86},{648,-86}}, color={0,0,127}));
+  connect(onBorHol.y, swiPum.u2) annotation (Line(points={{561.5,-108},{632,
+          -108},{632,-78},{648,-78}},               color={255,0,255}));
+  connect(onBorHol.y, conSup.trigger) annotation (Line(points={{561.5,-108},{
+          604,-108},{604,-82}},                color={255,0,255}));
+  connect(jun4.port_3, borHol1.port_a)
+    annotation (Line(points={{616,-166},{632,-166}}, color={0,127,255}));
+  connect(heaPum.port_b1, jun4.port_1) annotation (Line(points={{730,-138},{606,
+          -138},{606,-156}},
+                       color={0,127,255}));
+  connect(jun4.port_2, borHol.port_a) annotation (Line(points={{606,-176},{606,
+          -200},{632,-200}},
+                       color={0,127,255}));
+  connect(borHol1.port_b, jun5.port_1)
+    annotation (Line(points={{652,-166},{670,-166}}, color={0,127,255}));
+  connect(jun5.port_3, borHol.port_b) annotation (Line(points={{680,-176},{680,
+          -200},{652,-200}},
+                       color={0,127,255}));
+  connect(jun5.port_2, pumBor.port_a)
+    annotation (Line(points={{690,-166},{702,-166}}, color={0,127,255}));
+  connect(heaPum.port_b1, preSou.ports[1])
+    annotation (Line(points={{730,-138},{560,-138}}, color={0,127,255}));
+  connect(temDewSou.y, temDewMin.u[1]) annotation (Line(points={{401,-58},{432,
+          -58},{432,-104.8},{440,-104.8}}, color={0,0,127}));
+  connect(temDewSou1.y, temDewMin.u[2]) annotation (Line(points={{401,-78},{432,
+          -78},{432,-103.4},{440,-103.4}}, color={0,0,127}));
+  connect(temDewSou2.y, temDewMin.u[3]) annotation (Line(points={{401,-98},{432,
+          -98},{432,-102},{440,-102}}, color={0,0,127}));
+  connect(temDewSou3.y, temDewMin.u[4]) annotation (Line(points={{401,-118},{
+          432,-118},{432,-100.6},{440,-100.6}}, color={0,0,127}));
+  connect(temDewSou4.y, temDewMin.u[5]) annotation (Line(points={{401,-138},{
+          432,-138},{432,-99.2},{440,-99.2}}, color={0,0,127}));
+  connect(setPoiHeaPum.y, conSup.u_s) annotation (Line(points={{502,-90},{592,
+          -90},{592,-70},{598,-70}}, color={0,0,127}));
+  connect(temDewMin.yMax, setPoiHeaPum.u2)
+    annotation (Line(points={{461,-96},{478,-96}}, color={0,0,127}));
+  connect(temSetMin.yMin, setPoiHeaPum.u1) annotation (Line(points={{539,-66},{
+          470,-66},{470,-84},{478,-84}}, color={0,0,127}));
   connect(senTemRet_heaPum.port_b, heaPum.port_a2) annotation (Line(points={{
-          690,-62},{690,-70},{730,-70}}, color={0,127,255}));
-  connect(temMax.yMin, conSup.u_s) annotation (Line(points={{613,14},{618,14},{
-          618,-54},{638,-54}}, color={0,0,127}));
-  connect(conSup.y, swiPum.u1) annotation (Line(points={{662,-54},{670,-54},{
-          670,-42},{734,-42}}, color={0,0,127}));
-  connect(swiPum.y, heaPum.y) annotation (Line(points={{758,-50},{760,-50},{760,
-          -79},{752,-79}}, color={0,0,127}));
-  connect(off.y, swiPum.u3) annotation (Line(points={{721.4,-93},{724,-93},{724,
-          -58},{734,-58}}, color={0,0,127}));
-  connect(onBorHol.y, swiPum.u2) annotation (Line(points={{561.5,-70},{570,-70},
-          {570,-80},{710,-80},{710,-50},{734,-50}}, color={255,0,255}));
-  connect(onBorHol.y, conSup.trigger) annotation (Line(points={{561.5,-70},{570,
-          -70},{570,-80},{644,-80},{644,-66}}, color={255,0,255}));
-  connect(pre1.ports[1], borHol1.port_a)
-    annotation (Line(points={{560,-110},{592,-110}}, color={0,127,255}));
-  connect(borHol1.port_b, borHol.port_a)
-    annotation (Line(points={{624,-110},{632,-110}}, color={0,127,255}));
-  connect(heaPum.port_b1, borHol1.port_a) annotation (Line(points={{730,-82},{
-          580,-82},{580,-110},{592,-110}}, color={0,127,255}));
+          690,-60},{690,-126},{730,-126}}, color={0,127,255}));
+  connect(swiPum.y, heaPum.y) annotation (Line(points={{672,-78},{760,-78},{760,
+          -135},{752,-135}}, color={0,0,127}));
+  connect(setPoiHeaPum.y, masFloSouCoo4.T_in) annotation (Line(points={{502,-90},
+          {592,-90},{592,-36},{576,-36},{576,-12},{580,-12}}, color={0,0,127}));
+  connect(setPoiHeaPum.y, masFloSouCoo3.T_in) annotation (Line(points={{502,-90},
+          {592,-90},{592,-36},{576,-36},{576,48},{580,48}}, color={0,0,127}));
+  connect(setPoiHeaPum.y, masFloSouCoo1.T_in) annotation (Line(points={{502,-90},
+          {592,-90},{592,-36},{576,-36},{576,108},{580,108}}, color={0,0,127}));
+  connect(setPoiHeaPum.y, masFloSouCoo2.T_in) annotation (Line(points={{502,-90},
+          {592,-90},{592,-36},{576,-36},{576,168},{580,168}}, color={0,0,127}));
+  connect(setPoiHeaPum.y, masFloSouCoo.T_in) annotation (Line(points={{502,-90},
+          {592,-90},{592,-36},{576,-36},{576,228},{580,228}}, color={0,0,127}));
+  connect(EHea.u,QCon. y)
+    annotation (Line(points={{818,-30},{801,-30}},   color={0,0,127}));
+  connect(EEle.u, PEle.y)
+    annotation (Line(points={{818,-68},{801,-68}}, color={0,0,127}));
+  connect(EEle.y,COP. u2) annotation (Line(points={{841,-68},{848,-68},{848,-56},
+          {858,-56}},  color={0,0,127}));
+  connect(EHea.y,COP. u1) annotation (Line(points={{841,-30},{850,-30},{850,-44},
+          {858,-44}},  color={0,0,127}));
   annotation (
     __Dymola_Commands(
       file="modelica://Buildings/Resources/Scripts/Dymola/ThermalZones/EnergyPlus_9_6_0/Examples/SingleFamilyHouse/RadiantHeatingCooling_TRoom.mos" "Simulate and plot"),
