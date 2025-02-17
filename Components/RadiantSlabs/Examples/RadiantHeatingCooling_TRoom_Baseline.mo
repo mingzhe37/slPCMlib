@@ -496,9 +496,9 @@ model RadiantHeatingCooling_TRoom_Baseline
         0.115925; 14,0.115925; 14,0.24555; 19,0.24555; 19,0.115925; 24,0.115925],
       timeScale=3600) "Load shifting schedule, true if normal operation mode"
     annotation (Placement(transformation(extent={{820,60},{840,80}})));
-  Buildings.Controls.OBC.CDL.Reals.Sources.TimeTable TOU_Atlanta1(table=[0,
-        0.014993; 7,0.014993; 7,0.069728; 14,0.069728; 14,0.203217; 19,0.203217;
-        19,0.069728; 23,0.069728; 23,0.014993; 24,0.014993], timeScale=3600)
+  Buildings.Controls.OBC.CDL.Reals.Sources.TimeTable TOU_Atlanta1(table=[0,0.021859; 7,0.021859; 7,0.10167; 14,
+        0.10167; 14,0.297868; 19,0.297868; 19,0.10167; 23,0.10167; 23,0.021859; 24,0.021859],
+                                                             timeScale=3600)
                       "Load shifting schedule, true if normal operation mode"
     annotation (Placement(transformation(extent={{860,60},{880,80}})));
 protected

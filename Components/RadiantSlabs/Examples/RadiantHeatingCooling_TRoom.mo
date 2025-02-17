@@ -503,15 +503,14 @@ model RadiantHeatingCooling_TRoom
       /1000, initType=Modelica.Blocks.Types.Init.InitialState)
     "Electricity use per floor area"
     annotation (Placement(transformation(extent={{900,130},{920,150}})));
-  Buildings.Controls.OBC.CDL.Reals.Sources.TimeTable TOU_Atlanta1(table=[0,
-        0.014993; 7,0.014993; 7,0.069728; 14,0.069728; 14,0.203217; 19,0.203217;
-        19,0.069728; 23,0.069728; 23,0.014993; 24,0.014993], timeScale=3600)
-                      "Load shifting schedule, true if normal operation mode"
-    annotation (Placement(transformation(extent={{900,160},{920,180}})));
   Buildings.Controls.OBC.CDL.Reals.Sources.TimeTable TOU_Atlanta(table=[0,
         0.115925; 14,0.115925; 14,0.24555; 19,0.24555; 19,0.115925; 24,0.115925],
       timeScale=3600) "Load shifting schedule, true if normal operation mode"
     annotation (Placement(transformation(extent={{860,160},{880,180}})));
+  Buildings.Controls.OBC.CDL.Reals.Sources.TimeTable TOU_Atlanta1(table=[0,0.021859; 7,0.021859; 7,0.10167; 14,
+        0.10167; 14,0.297868; 19,0.297868; 19,0.10167; 23,0.10167; 23,0.021859; 24,0.021859], timeScale=3600)
+                      "Load shifting schedule, true if normal operation mode"
+    annotation (Placement(transformation(extent={{900,160},{920,180}})));
 protected
   Buildings.Controls.OBC.CDL.Reals.Sources.Constant phi_Zon[5](k=0.5)
     "Internal heat gain (computed already in EnergyPlus)"
