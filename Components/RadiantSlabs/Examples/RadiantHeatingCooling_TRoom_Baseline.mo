@@ -61,7 +61,7 @@ model RadiantHeatingCooling_TRoom_Baseline
     annotation (Placement(transformation(extent={{582,214},{602,234}})));
   Buildings.Controls.OBC.CDL.Reals.Sources.Constant TSetRooCoo(k(
       final unit="K",
-      displayUnit="degC") = 297.15, y(final unit="K", displayUnit="degC")) "Room temperture set point for cooling"
+      displayUnit="degC") = 296.65, y(final unit="K", displayUnit="degC")) "Room temperture set point for cooling"
     annotation (Placement(transformation(extent={{400,240},{420,260}})));
   Buildings.Controls.OBC.CDL.Conversions.BooleanToReal booToReaSou(realTrue=designPar.mCoo_flow_nominal_Sou)
     "Cooling water mass flow rate" annotation (Placement(transformation(extent={{540,222},{560,242}})));
@@ -452,13 +452,13 @@ model RadiantHeatingCooling_TRoom_Baseline
     annotation (Placement(transformation(extent={{480,-100},{500,-80}})));
   Modelica.Blocks.Sources.RealExpression QCon(y=-heaPum.QEva_flow)
     "Condenser heat flow rate"
-    annotation (Placement(transformation(extent={{780,-40},{800,-20}})));
+    annotation (Placement(transformation(extent={{820,-60},{840,-40}})));
   Modelica.Blocks.Sources.RealExpression PEle(y=heaPum.P + pumBor.P + (
-        slaCeiSou.dp*slaCeiSou.m_flow/1000/0.49 + slaCeiEas.dp*slaCeiEas.m_flow
-        /1000/0.49 + slaCeiNor.dp*slaCeiNor.m_flow/1000/0.49 + slaCeiWes.dp*
-        slaCeiWes.m_flow/1000/0.49 + slaCeiCor.dp*slaCeiCor.m_flow/1000/0.49))
+        slaCeiSou.dp*slaCeiSou.m_flow/1000/0.75 + slaCeiEas.dp*slaCeiEas.m_flow
+        /1000/0.75 + slaCeiNor.dp*slaCeiNor.m_flow/1000/0.75 + slaCeiWes.dp*
+        slaCeiWes.m_flow/1000/0.75 + slaCeiCor.dp*slaCeiCor.m_flow/1000/0.75))
     "Electricity use"
-    annotation (Placement(transformation(extent={{780,-78},{800,-58}})));
+    annotation (Placement(transformation(extent={{820,-98},{840,-78}})));
   Modelica.Blocks.Continuous.Integrator EHea(
     k(final unit="1/m2"),
     initType=Modelica.Blocks.Types.Init.InitialState,
@@ -466,7 +466,7 @@ model RadiantHeatingCooling_TRoom_Baseline
     u(final unit="W"),
     y(final unit="J/m2", displayUnit="kW.h/m2"))
     "Produced heat per unit area of floor"
-    annotation (Placement(transformation(extent={{820,-40},{840,-20}})));
+    annotation (Placement(transformation(extent={{860,-60},{880,-40}})));
   Modelica.Blocks.Continuous.Integrator EEle(
     k(final unit="1/m2"),
     initType=Modelica.Blocks.Types.Init.InitialState,
@@ -474,14 +474,33 @@ model RadiantHeatingCooling_TRoom_Baseline
     u(final unit="W"),
     y(final unit="J/m2", displayUnit="kW.h/m2"))
     "Electricity use per floor area"
-    annotation (Placement(transformation(extent={{820,-78},{840,-58}})));
+    annotation (Placement(transformation(extent={{860,-98},{880,-78}})));
   Buildings.Controls.OBC.CDL.Reals.Divide COP "Coefficient of performance"
-    annotation (Placement(transformation(extent={{860,-60},{880,-40}})));
+    annotation (Placement(transformation(extent={{900,-80},{920,-60}})));
   Modelica.Blocks.Sources.RealExpression PEleCirPum(y=(slaCeiSou.dp*slaCeiSou.m_flow
-        /1000/0.49 + slaCeiEas.dp*slaCeiEas.m_flow/1000/0.49 + slaCeiNor.dp*
-        slaCeiNor.m_flow/1000/0.49 + slaCeiWes.dp*slaCeiWes.m_flow/1000/0.49 +
-        slaCeiCor.dp*slaCeiCor.m_flow/1000/0.49)) "Electricity use"
-    annotation (Placement(transformation(extent={{780,20},{800,40}})));
+        /1000/0.75 + slaCeiEas.dp*slaCeiEas.m_flow/1000/0.75 + slaCeiNor.dp*
+        slaCeiNor.m_flow/1000/0.75 + slaCeiWes.dp*slaCeiWes.m_flow/1000/0.75 +
+        slaCeiCor.dp*slaCeiCor.m_flow/1000/0.75)) "Electricity use"
+    annotation (Placement(transformation(extent={{820,0},{840,20}})));
+  Modelica.Blocks.Sources.RealExpression PEle_TOU(y=(heaPum.P + pumBor.P + (
+        slaCeiSou.dp*slaCeiSou.m_flow/1000/0.75 + slaCeiEas.dp*slaCeiEas.m_flow
+        /1000/0.75 + slaCeiNor.dp*slaCeiNor.m_flow/1000/0.75 + slaCeiWes.dp*
+        slaCeiWes.m_flow/1000/0.75 + slaCeiCor.dp*slaCeiCor.m_flow/1000/0.75))*
+        TOU_Atlanta.y[1])      "Electricity use"
+    annotation (Placement(transformation(extent={{820,30},{840,50}})));
+  Modelica.Blocks.Continuous.Integrator ECost_TOU(k(final unit="1/m2") = 1/3600
+      /1000, initType=Modelica.Blocks.Types.Init.InitialState)
+    "Electricity use per floor area"
+    annotation (Placement(transformation(extent={{860,30},{880,50}})));
+  Buildings.Controls.OBC.CDL.Reals.Sources.TimeTable TOU_Atlanta(table=[0,
+        0.115925; 14,0.115925; 14,0.24555; 19,0.24555; 19,0.115925; 24,0.115925],
+      timeScale=3600) "Load shifting schedule, true if normal operation mode"
+    annotation (Placement(transformation(extent={{820,60},{840,80}})));
+  Buildings.Controls.OBC.CDL.Reals.Sources.TimeTable TOU_Atlanta1(table=[0,
+        0.014993; 7,0.014993; 7,0.069728; 14,0.069728; 14,0.203217; 19,0.203217;
+        19,0.069728; 23,0.069728; 23,0.014993; 24,0.014993], timeScale=3600)
+                      "Load shifting schedule, true if normal operation mode"
+    annotation (Placement(transformation(extent={{860,60},{880,80}})));
 protected
   Buildings.Controls.OBC.CDL.Reals.Sources.Constant phi_Zon[5](k=0.5)
     "Internal heat gain (computed already in EnergyPlus)"
@@ -704,13 +723,16 @@ equation
   connect(setPoiHeaPum.y, masFloSouCoo.T_in) annotation (Line(points={{502,-90},
           {592,-90},{592,-36},{576,-36},{576,228},{580,228}}, color={0,0,127}));
   connect(EHea.u,QCon. y)
-    annotation (Line(points={{818,-30},{801,-30}},   color={0,0,127}));
-  connect(EEle.u, PEle.y)
-    annotation (Line(points={{818,-68},{801,-68}}, color={0,0,127}));
-  connect(EEle.y,COP. u2) annotation (Line(points={{841,-68},{848,-68},{848,-56},
-          {858,-56}},  color={0,0,127}));
-  connect(EHea.y,COP. u1) annotation (Line(points={{841,-30},{850,-30},{850,-44},
-          {858,-44}},  color={0,0,127}));
+    annotation (Line(points={{858,-50},{841,-50}},   color={0,0,127}));
+  connect(EEle.u,PEle. y)
+    annotation (Line(points={{858,-88},{841,-88}},
+                                                 color={0,0,127}));
+  connect(EEle.y,COP. u2) annotation (Line(points={{881,-88},{888,-88},{888,-76},
+          {898,-76}},  color={0,0,127}));
+  connect(EHea.y,COP. u1) annotation (Line(points={{881,-50},{890,-50},{890,-64},
+          {898,-64}},  color={0,0,127}));
+  connect(ECost_TOU.u,PEle_TOU. y)
+    annotation (Line(points={{858,40},{841,40}}, color={0,0,127}));
   annotation (
     __Dymola_Commands(
       file="modelica://Buildings/Resources/Scripts/Dymola/ThermalZones/EnergyPlus_9_6_0/Examples/SingleFamilyHouse/RadiantHeatingCooling_TRoom.mos" "Simulate and plot"),

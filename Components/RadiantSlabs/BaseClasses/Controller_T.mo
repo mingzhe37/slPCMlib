@@ -62,6 +62,13 @@ model Controller_T
   parameter Real TSetZone(
     final unit="K",
     displayUnit="degC") = 297.15 "Constant output value";
+  Buildings.Controls.OBC.CDL.Interfaces.BooleanOutput
+                                            on
+    "Outputs true if the system is demanded on" annotation (Placement(
+        transformation(extent={{100,-20},{140,20}}), iconTransformation(extent={{100,-40},
+            {140,0}})));
+  Buildings.Controls.OBC.CDL.Reals.GreaterThreshold greThr
+    annotation (Placement(transformation(extent={{74,-10},{94,10}})));
 equation
   connect(mWat_Charging.y, swiPum.u3)
     annotation (Line(points={{-38,-90},{50,-90},{50,-58},{58,-58}}, color={0,0,127}));
@@ -90,6 +97,10 @@ equation
           50},{110,50}}, color={0,0,127}));
   connect(phiZon, conCoo.phiRoo) annotation (Line(points={{-120,-80},{-66,-80},
           {-66,76},{-42,76}}, color={0,0,127}));
+  connect(swiPum.y, greThr.u) annotation (Line(points={{82,-50},{90,-50},{90,
+          -20},{70,-20},{70,0},{72,0}}, color={0,0,127}));
+  connect(greThr.y, on)
+    annotation (Line(points={{96,0},{120,0}}, color={255,0,255}));
   annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
         Rectangle(
           extent={{-100,-100},{100,100}},
