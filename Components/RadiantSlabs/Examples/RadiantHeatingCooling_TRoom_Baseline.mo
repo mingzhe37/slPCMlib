@@ -61,7 +61,7 @@ model RadiantHeatingCooling_TRoom_Baseline
     annotation (Placement(transformation(extent={{582,214},{602,234}})));
   Buildings.Controls.OBC.CDL.Reals.Sources.Constant TSetRooCoo(k(
       final unit="K",
-      displayUnit="degC") = 296.65, y(final unit="K", displayUnit="degC")) "Room temperture set point for cooling"
+      displayUnit="degC") = 296.15, y(final unit="K", displayUnit="degC")) "Room temperture set point for cooling"
     annotation (Placement(transformation(extent={{400,240},{420,260}})));
   Buildings.Controls.OBC.CDL.Conversions.BooleanToReal booToReaSou(realTrue=designPar.mCoo_flow_nominal_Sou)
     "Cooling water mass flow rate" annotation (Placement(transformation(extent={{540,222},{560,242}})));
