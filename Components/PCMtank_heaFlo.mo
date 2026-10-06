@@ -6,6 +6,18 @@ model PCMtank_heaFlo "A PCM storage tank model"
     final energyDynamics=energyDynamicsHex,
     redeclare final Buildings.Fluid.MixingVolumes.MixingVolume vol);
 
+  replaceable package PCM =
+    slPCMlib.Media_Axiotherm_ATP.Axiotherm_ATP_12
+    constrainedby slPCMlib.Interfaces.partialPCM
+    annotation (Dialog(group="PCM and phase transition model"),
+      choicesAllMatching=true);
+
+  replaceable model PhaseTransitionModel =
+    slPCMlib.Interfaces.phTransModMeltingCurve
+    constrainedby slPCMlib.Interfaces.basicPhTransModel
+    annotation (Dialog(group="PCM and phase transition model"),
+      choicesAllMatching=true);
+
   parameter Real nTub(min=0)=nTub
    "Gain value multiplied with input signal";
   parameter Modelica.Units.SI.Length Rmax
@@ -72,8 +84,8 @@ model PCMtank_heaFlo "A PCM storage tank model"
   Components.HeatCapacitorSlPCMlib PCMCap(
     m=m,
     T(start=PCM_t_ini),
-    redeclare package PCM = slPCMlib.Media_Axiotherm_ATP.Axiotherm_ATP_12,
-    redeclare Interfaces.phTransModMeltingCurve phTrModel)
+    redeclare package PCM = PCM,
+    redeclare PhaseTransitionModel phTrModel)
     "Capacitor of PCM" annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=0,
